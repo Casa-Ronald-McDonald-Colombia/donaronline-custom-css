@@ -1,67 +1,208 @@
-# DonarOnline — CSS Custom Casa Ronald McDonald Colombia
+# DonarOnline · CSS Custom — Casa Ronald McDonald Colombia
 
-Hojas de estilo personalizadas para el formulario multi-pasos de DonarOnline,
-servidas vía jsDelivr y consumidas como `?custom_css=<base64>` en el iframe.
+> Repositorio que sirve el CSS personalizado del iframe de DonarOnline para CRMD.
+> El CSS se hospeda vía **statically.io CDN** y se consume como `?css=<base64>` en la URL del iframe.
+>
+> Mantenido por **Vladislav Marinovich** · Marinovich Consulting.
 
 ---
 
-## 📁 Estructura
+## ⚠️ LEER ANTES DE TOCAR NADA (instrucciones para agente)
 
-| Archivo | Uso |
+1. **NO existe `?custom_css=`**. El parámetro correcto es **`?css=`**. Si ves `?custom_css=` en algún lado, está roto.
+2. **NO uses jsDelivr.** Devuelve 502 para commits frescos. Usa **`cdn.statically.io`** siempre.
+3. **NO edites `boilerplate.css`** salvo que estés actualizando el template maestro. Para cambios en producción CRMD, edita `css/fcrm-oficial-v2-sos.css`.
+4. **El hash del commit es parte de la URL.** Cada commit invalida el cache. Después de cualquier `git push`, hay que **regenerar el Base64**.
+5. **Iframe en producción vive en** `casaronaldmcdonald.org.co` (página `/donar/` y modal de home). Cualquier cambio de Base64 implica actualizar el iframe en WordPress.
+
+---
+
+## 📁 Estructura del repo
+
+```
+donaronline-custom-css/
+├── README.md                          ← este archivo
+└── css/
+    ├── boilerplate.css                ← template maestro parametrizable (NO TOCAR en flujo normal)
+    └── fcrm-oficial-v2-sos.css        ← CSS de producción CRMD (este es el que se edita)
+```
+
+| Archivo | Para qué sirve | Cuándo se edita |
+|---|---|---|
+| `css/boilerplate.css` | Template parametrizable para reusar en otras organizaciones. Variables al tope, comentarios extensos. | Solo cuando se mejora el template maestro. No se sirve a producción CRMD. |
+| `css/fcrm-oficial-v2-sos.css` | CSS real que carga el iframe en `casaronaldmcdonald.org.co`. | Cada vez que CRMD necesita un cambio visual o de copy en los pasos. |
+
+---
+
+## 🎯 Variables editables (`:root` de `fcrm-oficial-v2-sos.css`)
+
+Estas son las **únicas** líneas que un agente debería tocar para cambios rápidos. Están al tope del archivo dentro del bloque `:root { ... }`.
+
+### Paleta de marca
+
+| Variable | Valor actual | Qué controla |
+|---|---|---|
+| `--main-color` | `#DB0007` | Color principal: botones, focus ring, monto seleccionado, pill seleccionada |
+| `--main-color-hover` | `#B00006` | Hover de botones |
+| `--main-color-soft` | `rgba(219, 0, 7, 0.08)` | Fondo suave para estados secundarios |
+| `--main-color-ring` | `rgba(219, 0, 7, 0.18)` | Anillo de focus de inputs |
+| `--bg-color` | `transparent` | Fondo general del form (transparent permite que se vea el fondo del modal/sitio) |
+| `--text-color` | `#1A1A1A` | Texto principal |
+| `--text-muted` | `#6B6B6B` | Texto secundario (labels, ayudas) |
+| `--input-bg` | `#FFFFFF` | Fondo de inputs |
+| `--input-border` | `#E0DCD3` | Borde de inputs en reposo |
+| `--input-border-hover` | `#C9C2B5` | Borde de inputs en hover |
+
+### Mensajes y textos por paso
+
+| Variable | Qué controla |
 |---|---|
-| `css/boilerplate.css` | **Template maestro** — punto de partida para nuevas campañas. Documentado, con variables al tope. |
-| `css/fcrm-oficial-v2-sos.css` | **CSS en producción** (campaña SOS). |
+| `--msg-step-1` | Subtítulo que aparece en el Paso 1 (selección de monto) |
+| `--msg-step-2` | Subtítulo del Paso 2 (datos del donante) |
+| `--msg-step-3` | Subtítulo del Paso 3 (pago) |
+| `--btn-step-1` | Texto del botón "Continuar" en Paso 1 |
+| `--btn-step-2` | Texto del botón en Paso 2 |
+| `--btn-step-3` | Texto del botón final (donar) |
+
+> **Saltos de línea en mensajes:** usar `\A` dentro del string. Funciona porque la regla CSS asociada tiene `white-space: pre-line`.
+> Ejemplo: `--msg-step-2: "Queremos conocerte,\A cuéntanos un poco de ti 📝";`
+
+### Tokens estructurales
+
+| Variable | Valor | Qué controla |
+|---|---|---|
+| `--font-family` | `'Inter', system-ui, sans-serif` | Tipografía global del form |
+| `--radius-input` | `10px` | Radio de bordes de inputs |
+| `--radius-btn` | `10px` | Radio de bordes de botones |
+| `--radius-pill` | `999px` | Radio de pills (mensual/única vez) — full round |
+| `--transition` | `180ms var(--ease)` | Duración de transiciones globales |
+
+> Los tokens de spacing (`--space-4`, `--space-8`, ... `--space-40`) existen pero rara vez se tocan. Si hay que ajustar gaps verticales del form, editar directamente las reglas que los usan.
 
 ---
 
-## ✏️ Cómo crear una nueva campaña
+## 🔁 Workflow completo: hacer un cambio y desplegarlo
 
-1. **Duplicar el boilerplate**
-   ```bash
-   cp css/boilerplate.css css/fcrm-<nombre-campaña>.css
-   ```
+### Pasos para un agente (sin margen de error)
 
-2. **Editar SOLO el bloque `:root`** del nuevo archivo:
-   - `--main-color` → color de marca (botones, focus, montos seleccionados)
-   - `--bg-color` → fondo del formulario
-   - `--msg-step-1/2/3` → mensajes de cada paso
-   - `--btn-step-1/2/3` → texto de los botones por paso
+**1. Clonar el repo (si no está ya local):**
+```bash
+git clone https://github.com/Casa-Ronald-McDonald-Colombia/donaronline-custom-css.git
+cd donaronline-custom-css
+```
 
-3. **Commit + push a `main`**
-   ```bash
-   git add css/fcrm-<nombre-campaña>.css
-   git commit -m "feat(css): nueva campaña <nombre>"
-   git push
-   ```
+**2. Editar el archivo de producción:**
+Abrir `css/fcrm-oficial-v2-sos.css` y modificar **únicamente** dentro del bloque `:root { ... }` al tope del archivo. Para cambios fuera de `:root` (selectores específicos), justificar el cambio en el mensaje de commit.
 
-4. **Tomar el commit hash corto** (`git rev-parse --short HEAD`)
+**3. Commit (en español, granular, una unidad lógica = un commit):**
+```bash
+git add css/fcrm-oficial-v2-sos.css
+git commit -m "style(<scope>): <descripción corta del cambio>
 
-5. **Generar el Base64** de la URL del CDN:
-   ```bash
-   echo -n "https://cdn.jsdelivr.net/gh/licencias-marinovich/donaronline-custom-css@<HASH>/css/fcrm-<nombre>.css" | base64
-   ```
+<cuerpo opcional explicando el porqué>"
+```
 
-6. **Pegar el Base64** en el iframe como `?custom_css=<BASE64>`
+Ejemplos válidos de subject:
+- `style(colors): actualizar primary a #DB0007 según kit de marca v2`
+- `style(step-2): nuevo subtítulo más cálido y line-break`
+- `style(pills): radio oculto, pill solid red cuando seleccionada`
+
+**4. Push:**
+```bash
+git push origin main
+```
+
+**5. Tomar el hash corto del último commit:**
+```bash
+git rev-parse --short HEAD
+# devuelve algo como: 60031ed
+```
+
+**6. Construir la URL del CDN (statically.io):**
+```
+https://cdn.statically.io/gh/Casa-Ronald-McDonald-Colombia/donaronline-custom-css@<HASH>/css/fcrm-oficial-v2-sos.css
+```
+
+Sustituir `<HASH>` por el hash del paso 5.
+
+**7. Codificar la URL en Base64:**
+```bash
+echo -n "https://cdn.statically.io/gh/Casa-Ronald-McDonald-Colombia/donaronline-custom-css@<HASH>/css/fcrm-oficial-v2-sos.css" | base64
+```
+
+> ⚠️ El flag `-n` de `echo` es **obligatorio**. Sin él se incluye un `\n` final y el Base64 sale mal.
+
+**8. Construir la URL del iframe:**
+```
+https://embed.donaronline.org/c/c/25107305-ccc8-415c-aca3-d3d944a246f3?css=<BASE64>
+```
+
+> El UUID `25107305-ccc8-415c-aca3-d3d944a246f3` es el ID de la campaña CRMD en DonarOnline. **No cambiar.**
+
+**9. Pegar el iframe en WordPress:**
+
+```html
+<iframe
+  src="https://embed.donaronline.org/c/c/25107305-ccc8-415c-aca3-d3d944a246f3?css=<BASE64>"
+  width="100%"
+  height="700"
+  frameborder="0"
+  scrolling="auto"
+  title="Donar a Casa Ronald McDonald Colombia"
+  allow="payment"
+  loading="lazy"
+  style="border:0; max-width:100%;"
+></iframe>
+```
+
+- Desktop: `height="700"`
+- Mobile: `height="920"` (responsive vía CSS del sitio)
+
+**10. Verificar en producción:**
+- Abrir la URL del CDN directamente en el navegador — debe servir el CSS plano (no 404, no 502).
+- Abrir el iframe en `casaronaldmcdonald.org.co/donar/`.
+- Verificar visualmente: pills mensual/única vez, mensajes por paso, color primary `#DB0007`, labels visibles.
 
 ---
 
-## 🐛 Bugs conocidos resueltos en boilerplate
+## 🚨 Troubleshooting
 
-- ❌ **Antes:** `body` y todos los descendientes de `.dsf` forzados a `transparent !important` → no se podía aplicar fondo.
-  ✅ **Ahora:** variable `--bg-color` controla fondo. Sin overrides masivos a transparent.
-
-- ❌ **Antes:** Mensajes por paso usaban `:has(.dsf__donor)` y `:has(.dsf__payment)` — clases que no siempre existen según la estructura de DonarOnline.
-  ✅ **Ahora:** Usa las clases oficiales `.dsf__step-{N}-container` documentadas por DonarOnline, con fallback a `.dsf__payment` y `.dsf__card-data` por compatibilidad.
-
----
-
-## 🔗 Referencias
-
-- [Docs oficiales DonarOnline — Estilos](https://docs.donaronline.org/formulario-multi-pasos/guias/estilos)
-- jsDelivr CDN: `https://cdn.jsdelivr.net/gh/licencias-marinovich/donaronline-custom-css@<HASH>/css/<archivo>.css`
+| Síntoma | Causa probable | Fix |
+|---|---|---|
+| El iframe carga pero el CSS no aplica | Parámetro mal escrito (`custom_css` en vez de `css`) | Corregir a `?css=` |
+| El CSS aplica un commit viejo | Olvidaste regenerar el Base64 con el hash nuevo | Repetir pasos 5–9 |
+| CDN devuelve 502 | jsDelivr está cacheando, o el commit es muy fresco | Usar `cdn.statically.io` (no `cdn.jsdelivr.net`) |
+| Cambio no se ve aunque el Base64 es nuevo | Cache del navegador o de WordPress | Hard refresh (Cmd+Shift+R) + purgar cache de WP |
+| Mensajes por paso no aparecen | Las variables `--msg-step-N` están vacías | Confirmar valores en `:root` |
+| Saltos de línea no funcionan en mensajes | Falta `\A` o la regla asociada perdió `white-space: pre-line` | Usar `\A` en el string y confirmar `white-space: pre-line` en la regla `::before`/`::after` |
+| Iframe no permite pagos | Falta atributo `allow="payment"` | Agregar al tag iframe |
 
 ---
 
-## ⚠️ Importante sobre cache
+## 🔐 Acceso
 
-jsDelivr cachea por commit hash. Si editas un CSS sin cambiar el hash en la URL Base64, **el viejo seguirá sirviéndose**. Siempre regenera el Base64 con el hash nuevo después de cada cambio.
+- **Repo:** `Casa-Ronald-McDonald-Colombia/donaronline-custom-css` (público)
+- **Admin org GitHub:** Vladislav Marinovich
+- **Dashboard DonarOnline:** acceso vía cuenta CRMD (consultar a Vladislav)
+- **WordPress:** cuenta de admin CRMD
+
+---
+
+## 📜 Histórico de bugs resueltos
+
+- **`?custom_css=` no existe** → el parámetro correcto es `?css=`. Documentado en docs oficiales DonarOnline.
+- **jsDelivr 502 para commits frescos** → migramos a `cdn.statically.io`.
+- **Fondos forzados a `transparent !important`** → reemplazado por variable `--bg-color`.
+- **`:has(.dsf__donor)` no siempre matchea** → reemplazado por `.dsf__step-{N}-container` (oficial).
+
+---
+
+## 🔗 Referencias externas
+
+- [Docs DonarOnline · Estilos personalizados](https://docs.donaronline.org/formulario-multi-pasos/guias/estilos)
+- [Statically.io CDN docs](https://statically.io/)
+- Campaña CRMD en DonarOnline: ID `25107305-ccc8-415c-aca3-d3d944a246f3`
+
+---
+
+_Construido y mantenido por [Vladislav Marinovich](https://marinovich.co) · Marinovich Consulting · mayo 2026_
