@@ -211,20 +211,36 @@ https://embed.donaronline.org/c/c/25107305-ccc8-415c-aca3-d3d944a246f3?css=<BASE
 
 ```html
 <iframe
-  src="https://embed.donaronline.org/c/c/25107305-ccc8-415c-aca3-d3d944a246f3?css=<BASE64>"
-  width="100%"
-  height="700"
-  frameborder="0"
-  scrolling="auto"
-  title="Donar a Casa Ronald McDonald Colombia"
-  allow="payment"
-  loading="lazy"
-  style="border:0; max-width:100%;"
+ id="donation_form"
+ class="responsive-iframe"
+ src="https://embed.donaronline.org/c/c/25107305-ccc8-415c-aca3-d3d944a246f3?css=<BASE64>"
+ allow="payment"
+ onload="window.scrollTo(0, 0);"
 ></iframe>
 ```
 
-- Desktop: `height="700"`
-- Mobile: `height="920"` (responsive vía CSS del sitio)
+**Pegar también este `<style>` en el mismo bloque HTML (o en el CSS global del sitio):**
+
+```html
+<style>
+    .responsive-iframe {
+        width: 100%;
+        border: none;
+        background: transparent;
+        display: block;
+        margin: 0 auto;
+        height: 620px;            /* 👈 ALTURA DESKTOP */
+    }
+    @media (max-width: 768px) {
+        .responsive-iframe {
+            height: 830px;        /* 👈 ALTURA MOBILE (≤768px) */
+        }
+    }
+</style>
+```
+
+> El primer `height` (620px) aplica en **desktop**.
+> El segundo `height` (830px) aplica en **mobile** (≤768px) — más alto porque las pills mensual/única vez se apilan y el form crece verticalmente.
 
 **10. Verificar en producción:**
 - Abrir la URL del CDN directamente en el navegador — debe servir el CSS plano (no 404, no 502).
