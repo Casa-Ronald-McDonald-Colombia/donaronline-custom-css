@@ -2,65 +2,125 @@
    BOILERPLATE · Formulario Multi-Pasos DonarOnline
    Casa Ronald McDonald Colombia
    ────────────────────────────────────────────────────────────────
-   Cómo usar:
-   1) Duplicar este archivo (ej: fcrm-campana-mayo.css)
-   2) Editar SOLO el bloque :root (variables)
-   3) Commit + push a GitHub
-   4) Generar Base64 con:
-        echo -n "https://cdn.statically.io/gh/licencias-marinovich/donaronline-custom-css@<HASH>/css/<archivo>.css" | base64
-   5) Pegar como ?css=<BASE64> en el iframe
+   Construido y mantenido por Vladislav Marinovich · Marinovich Consulting
+   Repo: github.com/Casa-Ronald-McDonald-Colombia/donaronline-custom-css
 
-   NO editar nada debajo del bloque :root salvo que sepas qué haces.
+   ◾ PROPÓSITO
+   Este archivo es el TEMPLATE MAESTRO. No se sirve directo a producción.
+   Para producción CRMD se usa `fcrm-oficial-v2-sos.css` (copia editada
+   de este boilerplate).
+
+   ◾ ARQUITECTURA
+   1. Bloque :root (líneas 30-85) → variables. ÚNICA zona editable.
+   2. Resto del archivo (líneas 90+) → selectores `.dsf__*` de DonarOnline.
+      NO editar salvo que sepas qué hace cada regla.
+
+   ◾ WORKFLOW PARA CREAR UNA NUEVA CAMPAÑA (otra organización)
+   1) cp css/boilerplate.css css/<slug-org>.css
+   2) Editar SOLO :root del nuevo archivo (paleta + textos por paso)
+   3) git add css/<slug-org>.css && git commit -m "feat(css): nueva campaña <slug>"
+   4) git push
+   5) HASH=$(git rev-parse --short HEAD)
+   6) URL="https://cdn.statically.io/gh/Casa-Ronald-McDonald-Colombia/donaronline-custom-css@${HASH}/css/<slug-org>.css"
+   7) BASE64=$(echo -n "$URL" | base64)        # ⚠ -n obligatorio
+   8) iframe src="https://embed.donaronline.org/c/c/<CAMPAIGN_UUID>?css=${BASE64}"
+
+   ◾ REGLAS DURAS
+   - Parámetro en URL es `?css=`. NO existe `?custom_css=`.
+   - CDN es `cdn.statically.io`. NO usar `cdn.jsdelivr.net` (devuelve 502 en commits frescos).
+   - Cada commit invalida el cache → siempre regenerar Base64 después de push.
+
+   ◾ CLASES DE DONARONLINE (referencia mental)
+   .dsf                        → contenedor raíz del formulario
+   .dsf__step-1-container      → paso 1 (montos + recurrencia)
+   .dsf__step-2-container      → paso 2 (datos del donante)
+   .dsf__step-3-container      → paso 3 (pago) · alias: .dsf__payment, .dsf__card-data
+   .dsf__amount-option         → cada chip de monto sugerido
+   .dsf__recurrency-option     → cada pill (Mensual / Única vez)
+   .dsf__group                 → wrapper de cada input + su label
+   .dsf__button-next           → botón primario (Continuar/Donar)
+   .dsf__button-prev           → botón secundario (Volver)
    ════════════════════════════════════════════════════════════════ */
 
+
+/* ════════════════════════════════════════════════════════════════
+   :root · VARIABLES — ÚNICA ZONA EDITABLE EN FLUJO NORMAL
+   ════════════════════════════════════════════════════════════════ */
 :root {
-    /* ── BRAND ──────────────────────────────────────────────────── */
-    --main-color:        #DB0007;   /* Rojo CRMD · botones, montos, focus */
-    --main-color-hover:  #B00006;   /* Rojo oscuro · hover */
-    --main-color-soft:   rgba(219, 0, 7, 0.08);   /* Tinte 8% · backgrounds */
-    --main-color-ring:   rgba(219, 0, 7, 0.18);   /* Ring focus 18% */
 
-    --bg-color:          transparent;
-    --text-color:        #1A1A1A;
-    --text-muted:        #6B6B6B;
-    --input-bg:          #FFFFFF;
-    --input-border:      #E0DCD3;   /* Beige sutil que respeta el host cream */
-    --input-border-hover:#C9C2B5;
+    /* ── PALETA DE MARCA ────────────────────────────────────────────
+       Cambiar estos 4 valores reskinea el form completo.
+       Mantener consistencia: hover debe ser 10-15% más oscuro que main. */
 
-    /* ── MENSAJES POR PASO ──────────────────────────────────────── */
+    --main-color:        #DB0007;                /* Color principal · botones primarios, monto seleccionado, pill seleccionada, focus ring, error */
+    --main-color-hover:  #B00006;                /* Variante oscura · hover de botones primarios y pills */
+    --main-color-soft:   rgba(219, 0, 7, 0.08);  /* Tinte 8% · backgrounds suaves (no usado actualmente, reservado) */
+    --main-color-ring:   rgba(219, 0, 7, 0.18);  /* Ring 18% · halo de focus alrededor de inputs */
+
+    /* ── COLORES NEUTROS ────────────────────────────────────────────
+       --bg-color = transparent permite que el fondo del modal/sitio
+       se vea a través del iframe. Cambiar a un hex sólido si el
+       iframe está en una página sin fondo propio. */
+
+    --bg-color:           transparent;            /* Fondo del form · transparent respeta el contenedor host */
+    --text-color:         #1A1A1A;                /* Texto principal (inputs, montos, labels en hover) */
+    --text-muted:         #6B6B6B;                /* Texto secundario (labels en reposo, ayudas, legal) */
+    --input-bg:           #FFFFFF;                /* Fondo de inputs y chips de monto */
+    --input-border:       #E0DCD3;                /* Borde de inputs en reposo · beige sutil */
+    --input-border-hover: #C9C2B5;                /* Borde de inputs en hover · beige medio */
+
+    /* ── MENSAJES POR PASO ──────────────────────────────────────────
+       Aparecen en la parte superior del form, dinámicos según el paso.
+       Para line-break dentro del string usar `\A` (la regla CSS ya
+       tiene `white-space: pre-line`).
+       Emojis OK · soportados nativos. */
+
     --msg-step-1: "Hoy puedes hacer que una familia esté cerca a su hijo mientras recibe tratamiento médico ❤️";
     --msg-step-2: "Queremos conocerte,\A cuéntanos un poco de ti 📝";
     --msg-step-3: "¡Ya estás a un solo paso de ayudar a una familia! ❤️";
 
-    /* ── TEXTO DE BOTÓN POR PASO ────────────────────────────────── */
-    --btn-step-1: "CONTINUAR CON MI APORTE";
-    --btn-step-2: "CONTINUAR";
-    --btn-step-3: "DONAR AHORA";
+    /* ── TEXTO DE BOTÓN POR PASO ────────────────────────────────────
+       Reemplaza el label nativo del botón "Continuar" por uno
+       específico por paso. El texto nativo se oculta con font-size: 0
+       en .dsf__button-next y este string se inyecta vía ::after. */
 
-    /* ── DESIGN TOKENS ──────────────────────────────────────────── */
-    --font-family:       'Inter', system-ui, sans-serif;
-    --radius-input:      10px;
-    --radius-btn:        10px;
-    --radius-pill:       999px;
+    --btn-step-1: "CONTINUAR CON MI APORTE";    /* Paso 1 → paso 2 */
+    --btn-step-2: "CONTINUAR";                  /* Paso 2 → paso 3 */
+    --btn-step-3: "DONAR AHORA";                /* Paso 3 → procesar pago */
 
-    --space-2:           4px;
-    --space-3:           8px;
-    --space-4:           12px;
-    --space-5:           16px;
-    --space-6:           20px;
-    --space-7:           24px;
-    --space-8:           32px;
-    --space-9:           40px;
+    /* ── DESIGN TOKENS ESTRUCTURALES ─────────────────────────────────
+       Rara vez se tocan. Mantener escala armónica si se ajustan. */
 
-    --ease:              cubic-bezier(0.22, 0.61, 0.36, 1);
-    --transition:        180ms var(--ease);
+    --font-family:  'Inter', system-ui, sans-serif;    /* Tipografía global · Inter cargada por el sitio host */
+    --radius-input: 10px;                              /* Bordes redondeados de inputs y chips de monto */
+    --radius-btn:   10px;                              /* Bordes redondeados de botones */
+    --radius-pill:  999px;                             /* Pills mensual/única vez · full round */
+
+    /* Escala de spacing (múltiplos de 4) — usar tokens, no valores arbitrarios */
+    --space-2: 4px;
+    --space-3: 8px;
+    --space-4: 12px;
+    --space-5: 16px;
+    --space-6: 20px;
+    --space-7: 24px;
+    --space-8: 32px;
+    --space-9: 40px;
+
+    --ease:       cubic-bezier(0.22, 0.61, 0.36, 1);   /* Curva de easing premium · suave al final */
+    --transition: 180ms var(--ease);                   /* Duración estándar para hover/focus */
 }
 
+
 /* ════════════════════════════════════════════════════════════════
-   ⛔ NO EDITAR DEBAJO DE ESTA LÍNEA
+   ⛔ NO EDITAR DEBAJO DE ESTA LÍNEA EN FLUJO NORMAL
+   Las reglas de abajo dependen de la estructura HTML de DonarOnline.
+   Tocar acá puede romper el form en producción.
    ════════════════════════════════════════════════════════════════ */
 
-/* ── BASE ──────────────────────────────────────────────────────── */
+
+/* ── BASE · body del iframe ───────────────────────────────────────
+   Aplica fuente y color base a todo el documento del iframe.
+   `!important` es necesario porque DonarOnline inyecta estilos inline. */
 body {
     background-color: var(--bg-color) !important;
     font-family: var(--font-family) !important;
@@ -69,7 +129,12 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── CONTENEDOR PRINCIPAL ──────────────────────────────────────── */
+
+/* ── CONTENEDOR PRINCIPAL · .dsf ──────────────────────────────────
+   Wrapper que envuelve los 3 pasos del form.
+   - max-width 420px → form angosto tipo "single column" (mejor UX mobile-first)
+   - padding-top 96px → deja espacio para el mensaje absoluto del paso
+   - position: relative → ancla para el ::before del mensaje */
 .dsf {
     width: 100% !important;
     max-width: 420px !important;
@@ -81,9 +146,13 @@ body {
     position: relative;
 }
 
-/* ── MENSAJE POR PASO (dinámico) ───────────────────────────────── */
+
+/* ── MENSAJE POR PASO (dinámico vía :has()) ───────────────────────
+   El mismo ::before cambia su contenido según qué paso está visible.
+   Funciona porque `:has()` permite detectar descendientes activos.
+   `white-space: pre-line` interpreta `\A` como salto de línea. */
 .dsf::before {
-    content: var(--msg-step-1);
+    content: var(--msg-step-1);              /* default · paso 1 */
     display: block !important;
     position: absolute;
     top: var(--space-3);
@@ -96,32 +165,38 @@ body {
     letter-spacing: -0.01em;
     text-align: center !important;
     color: var(--main-color) !important;
-    white-space: pre-line !important;
+    white-space: pre-line !important;        /* habilita \A como break */
     box-sizing: border-box;
 }
 
+/* Paso 2 activo · sobreescribe el contenido del ::before */
 .dsf:has(.dsf__step-2-container)::before {
     content: var(--msg-step-2);
 }
 
+/* Paso 3 activo · 3 selectores por compatibilidad con variantes de markup */
 .dsf:has(.dsf__step-3-container)::before,
 .dsf:has(.dsf__payment)::before,
 .dsf:has(.dsf__card-data)::before {
     content: var(--msg-step-3);
 }
 
+
 /* ════════════════════════════════════════════════════════════════
-   PASO 1 · MONTOS
+   PASO 1 · MONTOS SUGERIDOS
+   Layout: grid 3 columnas. Cada chip = .dsf__amount-option.
    ════════════════════════════════════════════════════════════════ */
 
+/* Grid contenedor de los chips de monto */
 .dsf__amount-option-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);   /* 3 columnas iguales */
     gap: var(--space-3);
     margin-top: var(--space-6);
     margin-bottom: var(--space-6);
 }
 
+/* Chip individual de monto · estado en reposo */
 .dsf__amount-option {
     padding: var(--space-4) var(--space-3);
     background-color: var(--input-bg);
@@ -138,11 +213,13 @@ body {
                 transform var(--transition);
 }
 
+/* Hover sobre chip no-seleccionado · borde y texto en rojo de marca */
 .dsf__amount-option:hover {
     border-color: var(--main-color);
     color: var(--main-color);
 }
 
+/* Chip seleccionado · fondo rojo sólido + texto blanco */
 .dsf__amount-option--selected {
     background-color: var(--main-color) !important;
     color: #fff !important;
@@ -150,13 +227,14 @@ body {
     font-weight: 700 !important;
 }
 
+/* Hover sobre chip ya seleccionado · usar variante oscura para feedback sutil */
 .dsf__amount-option--selected:hover {
     background-color: var(--main-color-hover) !important;
     border-color: var(--main-color-hover) !important;
     color: #fff !important;
 }
 
-/* "Otro monto" — input numérico */
+/* Input "Otro monto" · usa los mismos tokens que los inputs del paso 2 */
 .dsf__amount-option-input {
     background-color: var(--input-bg) !important;
     border: 1.5px solid var(--input-border) !important;
@@ -168,29 +246,39 @@ body {
     transition: border-color var(--transition), box-shadow var(--transition);
 }
 
+/* Focus de "Otro monto" · anillo rojo */
 .dsf__amount-option-input:focus {
     border-color: var(--main-color) !important;
     outline: none !important;
     box-shadow: 0 0 0 3px var(--main-color-ring) !important;
 }
 
-/* ── RECURRENCIA: Mensual / Única vez (pills) ───────────────────── */
+
+/* ── RECURRENCIA · pills Mensual / Única vez ─────────────────────
+   Diseño: 2 pills lado a lado en desktop, apiladas full-width en mobile.
+   La pill seleccionada usa el MISMO estilo visual que un monto seleccionado
+   (rojo sólido) para que el usuario perciba "estado activo" consistente.
+   El radio nativo dentro de la pill se oculta — solo se muestra el texto. */
+
+/* Wrapper de la sección recurrencia */
 .dsf__recurrency {
     margin: var(--space-5) 0 var(--space-3) 0;
 }
 
+/* Layout de las 2 pills · flex con gap */
 .dsf__recurrency-option-list {
     display: flex !important;
     gap: var(--space-3) !important;
     flex-wrap: wrap;
 }
 
+/* Pill individual · en reposo */
 .dsf__recurrency-option {
     flex: 1;
     padding: var(--space-4) var(--space-5) !important;
     background: var(--input-bg) !important;
     border: 1.5px solid var(--input-border) !important;
-    border-radius: var(--radius-pill) !important;
+    border-radius: var(--radius-pill) !important;   /* 999px = pill full round */
     cursor: pointer !important;
     transition: border-color var(--transition),
                 background-color var(--transition),
@@ -201,25 +289,30 @@ body {
     gap: var(--space-3) !important;
 }
 
+/* Hover sobre pill no-seleccionada · solo cambia borde */
 .dsf__recurrency-option:hover {
     border-color: var(--main-color) !important;
 }
 
+/* Pill seleccionada · rojo sólido (mismo lenguaje visual que monto seleccionado) */
 .dsf__recurrency-option--selected {
-    background: var(--main-color) !important;   /* Rojo sólido — mismo estilo que monto seleccionado */
+    background: var(--main-color) !important;
     border-color: var(--main-color) !important;
 }
 
+/* Hover sobre pill ya seleccionada · variante oscura */
 .dsf__recurrency-option--selected:hover {
     background: var(--main-color-hover) !important;
     border-color: var(--main-color-hover) !important;
 }
 
+/* Texto dentro de pill seleccionada · blanco y bold */
 .dsf__recurrency-option--selected .dsf__recurrency-option-label {
     color: #fff !important;
     font-weight: 700 !important;
 }
 
+/* Label de pill · estado base */
 .dsf__recurrency-option-label {
     font-size: 14px !important;
     font-weight: 500;
@@ -228,13 +321,16 @@ body {
     transition: color var(--transition);
 }
 
-/* Radio interno de la pill · oculto para look limpio */
+/* Radio nativo de la pill · OCULTO.
+   Decisión de diseño: la pill comunica selección por color, no necesita radio visible. */
 .dsf__recurrency-option-radio,
 .dsf__recurrency-option-radio-inner {
     display: none !important;
 }
 
-/* ── CHECKBOX "Acepto aumentar..." ──────────────────────────────── */
+
+/* ── CHECKBOX "Acepto aumentar mi aporte" ────────────────────────
+   Aparece debajo de los montos en el paso 1. */
 .dsf__allow-upgrade {
     display: flex !important;
     align-items: center !important;
@@ -242,6 +338,7 @@ body {
     margin: var(--space-5) 0 !important;
 }
 
+/* Caja del checkbox · cuadrado pequeño con bordes suaves */
 .dsf__allow-upgrade-checkbox {
     width: 20px !important;
     height: 20px !important;
@@ -253,11 +350,13 @@ body {
     flex-shrink: 0;
 }
 
+/* Estado marcado · relleno rojo */
 .dsf__allow-upgrade-checkbox--checked {
     background-color: var(--main-color) !important;
     border-color: var(--main-color) !important;
 }
 
+/* Label al lado del checkbox */
 .dsf__allow-upgrade-label {
     font-size: 13px !important;
     color: var(--text-color);
@@ -265,19 +364,24 @@ body {
     cursor: pointer;
 }
 
+
 /* ════════════════════════════════════════════════════════════════
    PASOS 2 y 3 · INPUTS Y LABELS
+   El paso 2 son datos personales; el paso 3 son datos de tarjeta.
+   Comparten los mismos tokens visuales para consistencia.
    ════════════════════════════════════════════════════════════════ */
 
+/* Wrapper de cada par label+input · controla el spacing vertical entre filas */
 .dsf__group,
 .dsf__payment .dsf__group,
 .dsf__card-data .dsf__group {
     position: relative;
-    margin-bottom: var(--space-4);   /* 12px · más compacto */
+    margin-bottom: var(--space-4);   /* 12px · compacto, evita que el form se vea "aireado de más" */
     display: flex;
     flex-direction: column;
 }
 
+/* Label visible arriba de cada input · NO usar floating label pattern */
 .dsf__group label,
 .dsf__payment label,
 .dsf__card-data label,
@@ -287,7 +391,7 @@ body {
 .payment-method-cc-expiration-date label {
     display: block !important;
     position: relative !important;
-    margin: 0 0 var(--space-3) 0 !important;
+    margin: 0 0 var(--space-3) 0 !important;       /* 8px de gap entre label e input */
     font-size: 13px !important;
     line-height: 1.3 !important;
     color: var(--text-muted) !important;
@@ -299,6 +403,7 @@ body {
     letter-spacing: 0 !important;
 }
 
+/* Input / select genérico · paso 2 y 3 */
 .dsf__group input,
 .dsf__group select,
 .dsf__payment input,
@@ -317,11 +422,13 @@ body {
     transition: border-color var(--transition), box-shadow var(--transition);
 }
 
+/* Hover sobre input · borde un poco más fuerte (feedback pasivo) */
 .dsf__group input:hover,
 .dsf__group select:hover {
     border-color: var(--input-border-hover) !important;
 }
 
+/* Focus · borde rojo + halo · señaliza claramente el campo activo */
 .dsf__group input:focus,
 .dsf__group select:focus,
 .dsf__payment input:focus,
@@ -331,6 +438,7 @@ body {
     box-shadow: 0 0 0 3px var(--main-color-ring) !important;
 }
 
+/* Placeholder · gris claro · weight normal para diferenciar del valor escrito */
 .dsf__group input::placeholder,
 .dsf__group select::placeholder,
 .dsf__payment input::placeholder {
@@ -339,11 +447,13 @@ body {
     font-weight: 400;
 }
 
+/* Estado error · borde rojo (DonarOnline agrega .dsf__group--error en validación fallida) */
 .dsf__group--error input,
 .dsf__group--error select {
     border-color: var(--main-color) !important;
 }
 
+/* Mensaje de error debajo del input · texto rojo pequeño */
 .dsf__group-error-message {
     color: var(--main-color) !important;
     font-size: 12px !important;
@@ -351,19 +461,23 @@ body {
     font-weight: 500;
 }
 
+
 /* ════════════════════════════════════════════════════════════════
-   BOTONES (Continuar / Volver)
+   BOTONES · Primario (Continuar/Donar) + Secundario (Volver)
    ════════════════════════════════════════════════════════════════ */
 
+/* Contenedor de los 2 botones · column-reverse pone el primario arriba */
 .dsf__buttons-container {
     display: flex !important;
-    flex-direction: column-reverse !important;
+    flex-direction: column-reverse !important;   /* Continuar arriba, Volver abajo */
     gap: var(--space-4) !important;
     width: 100% !important;
     margin-top: var(--space-6) !important;
 }
 
-/* ── BOTÓN PRIMARIO (Continuar / Donar) ─────────────────────────── */
+/* Botón primario · Continuar/Donar.
+   Truco: el texto nativo del botón se oculta con font-size:0 + color:transparent.
+   El texto real se inyecta vía ::after usando var(--btn-step-N). */
 .dsf__button-next,
 button[type="submit"] {
     display: flex !important;
@@ -379,12 +493,13 @@ button[type="submit"] {
     height: auto !important;
     margin: 0 !important;
     transition: background-color var(--transition), transform var(--transition);
-    box-shadow: 0 4px 14px rgba(219, 0, 7, 0.22);
-    /* Ocultar texto original — usamos ::after con var() */
+    box-shadow: 0 4px 14px rgba(219, 0, 7, 0.22);   /* Sombra sutil con tinte rojo */
+    /* Ocultar texto nativo · será reemplazado por ::after */
     font-size: 0 !important;
     color: transparent !important;
 }
 
+/* Texto inyectado · paso 1 por defecto */
 .dsf__button-next::after,
 button[type="submit"]::after {
     content: var(--btn-step-1);
@@ -402,10 +517,12 @@ button[type="submit"]::after {
     width: 100% !important;
 }
 
+/* Paso 2 activo → texto del botón cambia */
 .dsf:has(.dsf__step-2-container) .dsf__button-next::after {
     content: var(--btn-step-2);
 }
 
+/* Paso 3 activo → "DONAR AHORA" + ligeramente más grande para énfasis final */
 .dsf:has(.dsf__step-3-container) .dsf__button-next::after,
 .dsf:has(.dsf__payment) .dsf__button-next::after,
 .dsf:has(.dsf__card-data) .dsf__button-next::after {
@@ -413,18 +530,20 @@ button[type="submit"]::after {
     font-size: 15px !important;
 }
 
+/* Hover · color oscuro + leve lift + sombra más fuerte */
 .dsf__button-next:hover {
     background-color: var(--main-color-hover) !important;
     transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(219, 0, 7, 0.28);
 }
 
+/* Active (click) · vuelve a su sitio + sombra reducida (efecto press) */
 .dsf__button-next:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(219, 0, 7, 0.22);
 }
 
-/* ── BOTÓN SECUNDARIO (Volver) ──────────────────────────────────── */
+/* Botón secundario · Volver. Tipo text-link, sin fondo */
 .dsf__button-prev {
     background: transparent !important;
     border: none !important;
@@ -441,17 +560,20 @@ button[type="submit"]::after {
     border-radius: var(--radius-btn) !important;
 }
 
+/* Hover de Volver · texto rojo */
 .dsf__button-prev:hover {
     color: var(--main-color) !important;
 }
 
+
 /* ════════════════════════════════════════════════════════════════
-   AVISO LEGAL Y MENSAJE DE SEGURIDAD
+   AVISO LEGAL · checkbox "Acepto términos" + mensaje legal
+   Aparece típicamente en el paso 3 antes del botón final.
    ════════════════════════════════════════════════════════════════ */
 
 .dsf__legal-notice-container {
     display: flex !important;
-    align-items: flex-start !important;
+    align-items: flex-start !important;      /* checkbox alineado al tope del texto largo */
     gap: var(--space-3) !important;
     margin: var(--space-5) 0 !important;
 }
@@ -465,7 +587,7 @@ button[type="submit"]::after {
     transition: background-color var(--transition),
                 border-color var(--transition);
     flex-shrink: 0;
-    margin-top: 2px;
+    margin-top: 2px;                          /* alineación óptica con la primera línea */
 }
 
 .dsf__legal-notice-checkbox--checked {
@@ -485,17 +607,19 @@ button[type="submit"]::after {
     text-decoration: underline;
 }
 
-/* Ocultar mensaje de seguridad genérico */
+/* Mensaje genérico de seguridad de DonarOnline · ocultado para reducir ruido visual */
 .dsf__security-message {
     display: none !important;
 }
 
-/* ── LOADER ─────────────────────────────────────────────────────── */
+
+/* ── LOADER · spinner cuando el form procesa ────────────────────── */
 .dsf__loader-container {
     color: var(--main-color) !important;
 }
 
-/* ── MENSAJES THANKS / ERROR ────────────────────────────────────── */
+
+/* ── MENSAJES FINALES · gracias / error post-submit ──────────────── */
 .dsf__thanks-message,
 .dsf__error-message {
     text-align: center;
@@ -509,19 +633,27 @@ button[type="submit"]::after {
     color: var(--main-color) !important;
 }
 
+
 /* ════════════════════════════════════════════════════════════════
-   RESPONSIVE · ≤480px
+   RESPONSIVE · breakpoint mobile ≤480px
+   Cambios clave:
+   - Padding lateral del .dsf (en desktop es 0, en mobile se da aire)
+   - Pills mensual/única vez pasan a apilarse (column) full-width
    ════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 480px) {
+
+    /* Form con padding lateral en mobile · evita inputs pegados al borde */
     .dsf {
         padding: 88px var(--space-4) var(--space-5) var(--space-4) !important;
     }
 
+    /* Mensaje del paso · 2px más pequeño para no dominar la pantalla */
     .dsf::before {
         font-size: 17px !important;
     }
 
+    /* Chips de monto · mantienen 3 columnas pero gap más cerrado */
     .dsf__amount-option-list {
         gap: var(--space-3);
     }
@@ -531,7 +663,7 @@ button[type="submit"]::after {
         font-size: 14px;
     }
 
-    /* Pills mensual/única vez · full width apilado en mobile */
+    /* Pills mensual/única vez · stack vertical full-width */
     .dsf__recurrency-option-list {
         flex-direction: column !important;
         gap: var(--space-3) !important;
