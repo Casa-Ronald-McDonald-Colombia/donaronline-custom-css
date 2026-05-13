@@ -11,7 +11,7 @@
 
 1. **NO existe `?custom_css=`**. El parámetro correcto es **`?css=`**. Si ves `?custom_css=` en algún lado, está roto.
 2. **NO uses jsDelivr.** Devuelve 502 para commits frescos. Usa **`cdn.statically.io`** siempre.
-3. **NO edites `boilerplate.css`** salvo que estés actualizando el template maestro. Para cambios en producción CRMD, edita `css/fcrm-oficial-v2-sos.css`.
+3. **NO edites `boilerplate.css`** salvo que estés actualizando el template maestro. Para cambios en producción CRMD, edita `css/crmd-oficial-v1.css`.
 4. **El hash del commit es parte de la URL.** Cada commit invalida el cache. Después de cualquier `git push`, hay que **regenerar el Base64**.
 5. **Iframe en producción vive en** `casaronaldmcdonald.org.co` (página `/donar/` y modal de home). Cualquier cambio de Base64 implica actualizar el iframe en WordPress.
 
@@ -21,20 +21,20 @@
 
 ```
 donaronline-custom-css/
-├── README.md                          ← este archivo
+├── README.md                  ← este archivo
 └── css/
-    ├── boilerplate.css                ← template maestro parametrizable (NO TOCAR en flujo normal)
-    └── fcrm-oficial-v2-sos.css        ← CSS de producción CRMD (este es el que se edita)
+    ├── boilerplate.css        ← template maestro · framework de selectores .dsf__*
+    └── crmd-oficial-v1.css    ← CSS de producción CRMD · paleta + textos por paso
 ```
 
 | Archivo | Para qué sirve | Cuándo se edita |
 |---|---|---|
-| `css/boilerplate.css` | Template parametrizable para reusar en otras organizaciones. Variables al tope, comentarios extensos. | Solo cuando se mejora el template maestro. No se sirve a producción CRMD. |
-| `css/fcrm-oficial-v2-sos.css` | CSS real que carga el iframe en `casaronaldmcdonald.org.co`. | Cada vez que CRMD necesita un cambio visual o de copy en los pasos. |
+| `css/boilerplate.css` | Framework: todas las reglas que dan forma al form (layout, hover, focus, responsive). Reutilizable para cualquier organización. | Solo cuando se mejora el template maestro (estructura, no contenido). |
+| `css/crmd-oficial-v1.css` | El archivo de **producción CRMD**. Es lo que carga el iframe en `casaronaldmcdonald.org.co`. Define paleta de marca y mensajes por paso. | Cada vez que CRMD necesita cambiar un color, un texto de mensaje o un texto de botón. |
 
 ---
 
-## 🎯 Variables editables (`:root` de `fcrm-oficial-v2-sos.css`)
+## 🎯 Variables editables (`:root` de `crmd-oficial-v1.css`)
 
 Estas son las **únicas** líneas que un agente debería tocar para cambios rápidos. Están al tope del archivo dentro del bloque `:root { ... }`.
 
@@ -81,6 +81,74 @@ Estas son las **únicas** líneas que un agente debería tocar para cambios ráp
 
 ---
 
+## 🎨 Mapa visual · qué color va dónde
+
+Referencia rápida para diseñador o agente que quiera entender el reskin sin abrir el CSS.
+
+| Variable | Swatch | Aplica a |
+|---|---|---|
+| `--main-color` | ![#DB0007](https://placehold.co/30x20/DB0007/DB0007.png) `#DB0007` | Botón "Donar", monto seleccionado, pill seleccionada, focus ring, mensaje de error, link legal, texto del mensaje por paso |
+| `--main-color-hover` | ![#B00006](https://placehold.co/30x20/B00006/B00006.png) `#B00006` | Hover sobre botón primario y sobre pill seleccionada |
+| `--bg-color` | ⬜ `transparent` | Fondo del form (deja ver el host) |
+| `--text-color` | ![#1A1A1A](https://placehold.co/30x20/1A1A1A/1A1A1A.png) `#1A1A1A` | Texto de inputs, monto en reposo, label del checkbox upgrade |
+| `--text-muted` | ![#6B6B6B](https://placehold.co/30x20/6B6B6B/6B6B6B.png) `#6B6B6B` | Labels arriba de inputs, aviso legal, botón "Volver" |
+| `--input-bg` | ![#FFFFFF](https://placehold.co/30x20/FFFFFF/CCCCCC.png) `#FFFFFF` | Fondo de inputs, chips de monto, pills, "otro monto" |
+| `--input-border` | ![#E0DCD3](https://placehold.co/30x20/E0DCD3/E0DCD3.png) `#E0DCD3` | Borde de inputs y chips en reposo |
+
+> 📸 **TODO v2:** agregar screenshot anotado del form con flechas señalando cada zona → variable. Vlad: cuando haya tiempo, capturar `casaronaldmcdonald.org.co/donar/` en desktop y anotar en Figma.
+
+### Mapa textual de zonas del form
+
+```
+┌─────────────────────────────────────────┐
+│  [mensaje del paso ──────]              │  ← --msg-step-N · color --main-color
+│                                         │
+│  ┌─────┐ ┌─────┐ ┌─────┐                │
+│  │ 50k │ │100k │ │200k │  ← chips monto │  reposo: bg=--input-bg, border=--input-border
+│  └─────┘ └─────┘ └─────┘                │  selected: bg=--main-color, color=#fff
+│  ┌─────┐ ┌─────┐ ┌─────┐                │
+│  │300k │ │500k │ │Otro │                │
+│  └─────┘ └─────┘ └─────┘                │
+│                                         │
+│  ╭─────────────╮ ╭─────────────╮        │  ← pills recurrencia
+│  │  Mensual    │ │ Única vez   │        │  selected: bg=--main-color, label=#fff
+│  ╰─────────────╯ ╰─────────────╯        │
+│                                         │
+│  Email          ← label, color=--text-muted
+│  ┌────────────────────────────────┐    │  ← input
+│  │ tucorreo@ejemplo.com           │    │  border=--input-border
+│  └────────────────────────────────┘    │  focus: border=--main-color + ring
+│                                         │
+│  ┌────────────────────────────────┐    │
+│  │      CONTINUAR CON MI APORTE   │    │  ← botón primario
+│  └────────────────────────────────┘    │  bg=--main-color, text=#fff
+│         Volver                          │  ← botón secundario, color=--text-muted
+└─────────────────────────────────────────┘
+```
+
+---
+
+## 🗺️ Roadmap
+
+### v1 (actual · producción)
+- ✅ Migración a org Casa-Ronald-McDonald-Colombia
+- ✅ Variables `:root` controlando paleta + mensajes + botones por paso
+- ✅ Rename a `crmd-oficial-v1.css`
+- ✅ README operativo para agentes
+
+### v2 (próximo · post-launch)
+- 🔲 **Modularizar** — separar `crmd-oficial-v1.css` en dos archivos: uno con SOLO `:root` (paleta + textos) y otro `@import` al boilerplate. El archivo de producción queda ultra-thin (solo overrides), todo el framework vive en `boilerplate.css`.
+- 🔲 **Testear** la modularización en sandbox de DonarOnline antes de cambiar prod. Verificar que `@import` funciona vía iframe cross-origin con statically.io.
+- 🔲 **Enviar a DonarOnline como referencia técnica** — una vez validado v2, compartir con el equipo de soporte de DonarOnline como caso de uso ejemplar de su API de `?css=`. Posible feature en su documentación oficial.
+- 🔲 Screenshot anotado del form con mapping variable→zona (Figma export).
+- 🔲 Workflow en GitHub Actions que genera el Base64 automáticamente en cada push y lo postea como comentario en el commit.
+- 🔲 Validador YAML que falla si una variable de `:root` queda vacía.
+
+### Futuro (Q3 2026+)
+- 🔲 Spin-off del repo `donaronline-theme-template` parametrizable (con Jinja2 + build.py) para reusar en otras ONGs cliente de Marinovich Consulting.
+
+---
+
 ## 🔁 Workflow completo: hacer un cambio y desplegarlo
 
 ### Pasos para un agente (sin margen de error)
@@ -92,11 +160,11 @@ cd donaronline-custom-css
 ```
 
 **2. Editar el archivo de producción:**
-Abrir `css/fcrm-oficial-v2-sos.css` y modificar **únicamente** dentro del bloque `:root { ... }` al tope del archivo. Para cambios fuera de `:root` (selectores específicos), justificar el cambio en el mensaje de commit.
+Abrir `css/crmd-oficial-v1.css` y modificar **únicamente** dentro del bloque `:root { ... }` al tope del archivo. Para cambios fuera de `:root` (selectores específicos), justificar el cambio en el mensaje de commit.
 
 **3. Commit (en español, granular, una unidad lógica = un commit):**
 ```bash
-git add css/fcrm-oficial-v2-sos.css
+git add css/crmd-oficial-v1.css
 git commit -m "style(<scope>): <descripción corta del cambio>
 
 <cuerpo opcional explicando el porqué>"
@@ -120,14 +188,14 @@ git rev-parse --short HEAD
 
 **6. Construir la URL del CDN (statically.io):**
 ```
-https://cdn.statically.io/gh/Casa-Ronald-McDonald-Colombia/donaronline-custom-css@<HASH>/css/fcrm-oficial-v2-sos.css
+https://cdn.statically.io/gh/Casa-Ronald-McDonald-Colombia/donaronline-custom-css@<HASH>/css/crmd-oficial-v1.css
 ```
 
 Sustituir `<HASH>` por el hash del paso 5.
 
 **7. Codificar la URL en Base64:**
 ```bash
-echo -n "https://cdn.statically.io/gh/Casa-Ronald-McDonald-Colombia/donaronline-custom-css@<HASH>/css/fcrm-oficial-v2-sos.css" | base64
+echo -n "https://cdn.statically.io/gh/Casa-Ronald-McDonald-Colombia/donaronline-custom-css@<HASH>/css/crmd-oficial-v1.css" | base64
 ```
 
 > ⚠️ El flag `-n` de `echo` es **obligatorio**. Sin él se incluye un `\n` final y el Base64 sale mal.
