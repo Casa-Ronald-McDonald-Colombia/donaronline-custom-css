@@ -7,6 +7,14 @@
 
 ---
 
+## 👋 Primera vez aquí
+
+- 👤 **Eres humano (no técnico) y solo quieres el iframe o cambiar algo:** lee primero [`HUMANO.md`](./HUMANO.md).
+- 🤖 **Vas a delegarle el trabajo a un agente IA:** abre [`AGENT_PROMPTS.md`](./AGENT_PROMPTS.md) y copia el "Prompt 0 · de inicio".
+- 🧑‍💻 **Eres developer y quieres entender la arquitectura:** sigue leyendo este README.
+
+---
+
 ## ⚠️ LEER ANTES DE TOCAR NADA (instrucciones para agente)
 
 1. **NO existe `?custom_css=`**. El parámetro correcto es **`?css=`**. Si ves `?custom_css=` en algún lado, está roto.
@@ -21,7 +29,8 @@
 
 ```
 donaronline-custom-css/
-├── README.md                  ← este archivo
+├── README.md                  ← este archivo · doc técnica completa
+├── HUMANO.md                  ← guía amigable para humanos no técnicos
 ├── AGENT_PROMPTS.md           ← prompts listos para copiar/pegar al darle tareas a un agente IA
 └── css/
     ├── boilerplate.css        ← template maestro · framework de selectores .dsf__*
