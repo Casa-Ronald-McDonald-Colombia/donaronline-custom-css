@@ -22,6 +22,7 @@
 ```
 donaronline-custom-css/
 ├── README.md                  ← este archivo
+├── AGENT_PROMPTS.md           ← prompts listos para copiar/pegar al darle tareas a un agente IA
 └── css/
     ├── boilerplate.css        ← template maestro · framework de selectores .dsf__*
     └── crmd-oficial-v1.css    ← CSS de producción CRMD · paleta + textos por paso
