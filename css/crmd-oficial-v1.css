@@ -114,6 +114,19 @@ body {
    PASO 1 · MONTOS
    ════════════════════════════════════════════════════════════════ */
 
+/* ── ORDEN VISUAL PASO 1 ─────────────────────────────────────────
+   Forzamos que la pregunta de recurrencia (Mensual / Única vez)
+   aparezca ANTES que los montos. El usuario decide primero el
+   compromiso (frecuencia) y luego el valor — anclaje psicológico
+   más sólido para conversión a donación mensual. */
+.dsf__step-1-container {
+    display: flex !important;
+    flex-direction: column !important;
+}
+.dsf__recurrency      { order: 1 !important; }
+.dsf__amount          { order: 2 !important; }
+.dsf__allow-upgrade   { order: 3 !important; }
+
 .dsf__amount-option-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

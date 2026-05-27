@@ -187,6 +187,22 @@ body {
    Layout: grid 3 columnas. Cada chip = .dsf__amount-option.
    ════════════════════════════════════════════════════════════════ */
 
+/* ── ORDEN VISUAL PASO 1 ─────────────────────────────────────────
+   Forzamos que la pregunta de recurrencia (Mensual / Única vez)
+   aparezca ANTES que los montos. El usuario decide primero el
+   compromiso (frecuencia) y luego el valor — anclaje psicológico
+   más sólido para conversión a donación mensual recurrente.
+   El HTML nativo ya viene en este orden, pero algún CSS de
+   DonarOnline o el host puede invertirlo; con order: explícito
+   garantizamos el resultado pase lo que pase. */
+.dsf__step-1-container {
+    display: flex !important;
+    flex-direction: column !important;
+}
+.dsf__recurrency      { order: 1 !important; }   /* Mensual / Única vez */
+.dsf__amount          { order: 2 !important; }   /* Montos sugeridos */
+.dsf__allow-upgrade   { order: 3 !important; }   /* Aumentar 15%/año */
+
 /* Grid contenedor de los chips de monto */
 .dsf__amount-option-list {
     display: grid;
