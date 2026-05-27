@@ -234,7 +234,13 @@ body {
     color: #fff !important;
 }
 
-/* Input "Otro monto" · usa los mismos tokens que los inputs del paso 2 */
+/* Input "Otro monto" · usa los mismos tokens que los inputs del paso 2
+   ──────────────────────────────────────────────────────────────────
+   FIX crítico: cuando el usuario escribe en "otro monto", el contenedor
+   padre .dsf__amount-option recibe la clase --selected, que fuerza
+   color:#fff !important. El input hijo hereda ese blanco y el texto
+   se vuelve invisible sobre fondo blanco. Forzamos color: --text-color
+   con !important para romper la cascada. */
 .dsf__amount-option-input {
     background-color: var(--input-bg) !important;
     border: 1.5px solid var(--input-border) !important;
@@ -242,6 +248,7 @@ body {
     padding: var(--space-4) var(--space-5) !important;
     font-size: 15px !important;
     font-family: var(--font-family) !important;
+    color: var(--text-color) !important;
     height: 48px !important;
     transition: border-color var(--transition), box-shadow var(--transition);
 }

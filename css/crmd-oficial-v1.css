@@ -156,7 +156,11 @@ body {
     color: #fff !important;
 }
 
-/* "Otro monto" — input numérico */
+/* "Otro monto" — input numérico
+   ──────────────────────────────────────────────────────────────
+   FIX: el padre .dsf__amount-option al recibir --selected fuerza
+   color:#fff y el input hijo lo hereda, dejando el texto invisible.
+   Forzamos color:--text-color para romper la herencia. */
 .dsf__amount-option-input {
     background-color: var(--input-bg) !important;
     border: 1.5px solid var(--input-border) !important;
@@ -164,6 +168,7 @@ body {
     padding: var(--space-4) var(--space-5) !important;
     font-size: 15px !important;
     font-family: var(--font-family) !important;
+    color: var(--text-color) !important;
     height: 48px !important;
     transition: border-color var(--transition), box-shadow var(--transition);
 }
