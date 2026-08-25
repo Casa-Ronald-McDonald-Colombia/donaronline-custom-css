@@ -1,0 +1,532 @@
+/* ════════════════════════════════════════════════════════════════
+   CRMD · Formulario Multi-Pasos DonarOnline · CASA CALI (v3 · "Sitio")
+   ────────────────────────────────────────────────────────────────
+   ARCHIVO DE PRUEBA — NO reemplaza a crmd-oficial-v1.css.
+   Piel del mockup "Formulario Donacion Sitio": tarjeta BLANCA, bordes
+   finos 1.5px, seleccionado ROJO suave (no amarillo), fuente Figtree,
+   radios suaves. Solo la tarjeta va dentro del iframe; header/hero/
+   prueba social/footer viven en la página WP (fuera del iframe).
+
+   Flujo: editar :root → commit → nuevo hash → Base64 → ?css= del iframe.
+   ════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    /* ── PALETA "SITIO" ─────────────────────────────────────────── */
+    --ink:            #2B2B2B;
+    --muted:          #595959;
+    --muted-2:        #5E5E5E;
+
+    --white:          #FFFFFF;   /* Tarjeta y opciones */
+    --cream:          #FFFDE9;   /* Caja recap "Tu aporte" */
+    --lavender:       #D6CCFB;   /* Resumen paso 3 */
+    --amber:          #FFBC0D;   /* Badge "Más elegido" */
+
+    --red:            #DB0007;
+    --red-hover:      #C00006;
+    --red-soft-bg:    #FFF6F6;                    /* Fondo del seleccionado */
+    --red-ring:       rgba(219, 0, 7, 0.11);      /* Halo del seleccionado */
+
+    --border:         rgba(43, 43, 43, 0.14);     /* Borde fino por defecto */
+    --border-hover:   rgba(43, 43, 43, 0.32);
+
+    --bg-color:       transparent;
+    --text-color:     var(--ink);
+    --input-bg:       var(--white);
+    --input-border:   var(--border);
+
+    /* ── ETIQUETA DE PASO (arriba de la tarjeta, pequeña) ───────── */
+    --msg-step-1: "Elige tu aporte";
+    --msg-step-2: "Tus datos";
+    --msg-step-3: "Cómo quieres pagar";
+
+    /* ── TEXTO DE BOTÓN POR PASO (caja normal, no mayúsculas) ────── */
+    --btn-step-1: "Continuar con mi aporte";
+    --btn-step-2: "Ir al pago";
+    --btn-step-3: "Donar ahora";
+
+    /* ── DESIGN TOKENS ──────────────────────────────────────────── */
+    --font-family:    'Figtree', system-ui, sans-serif;
+    --radius-btn:     8px;
+    --radius-input:   10px;
+    --radius-card:    12px;
+    --radius-toggle:  8px;
+    --border-w:       1.5px;
+
+    --space-2:  4px;  --space-3:  8px;  --space-4: 12px;  --space-5: 16px;
+    --space-6: 20px;  --space-7: 24px;  --space-8: 32px;
+
+    --ease:       cubic-bezier(0.22, 0.61, 0.36, 1);
+    --transition: 150ms var(--ease);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ⛔ NO EDITAR DEBAJO DE ESTA LÍNEA (salvo que sepas qué haces)
+   ════════════════════════════════════════════════════════════════ */
+
+body {
+    background-color: var(--bg-color) !important;
+    font-family: var(--font-family) !important;
+    color: var(--text-color) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── TARJETA BLANCA ────────────────────────────────────────────── */
+.dsf {
+    width: 100% !important;
+    max-width: 512px !important;
+    margin: 0 auto !important;
+    padding: 56px var(--space-7) var(--space-8) var(--space-7) !important;
+    background: var(--white) !important;
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 4px rgba(43, 43, 43, 0.04), 0 12px 32px rgba(43, 43, 43, 0.07) !important;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Etiqueta de paso (pequeña, arriba a la izquierda) */
+.dsf::before {
+    content: var(--msg-step-1);
+    display: block !important;
+    position: absolute;
+    top: var(--space-7);
+    left: var(--space-7);
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: var(--ink) !important;
+    letter-spacing: 0;
+}
+.dsf:has(.dsf__step-2-container)::before { content: var(--msg-step-2); }
+.dsf:has(.dsf__step-3-container)::before,
+.dsf:has(.dsf__payment)::before,
+.dsf:has(.dsf__card-data)::before { content: var(--msg-step-3); }
+
+/* ════════════════════════════════════════════════════════════════
+   PASO 1 · Orden: recurrencia → montos → recap
+   ════════════════════════════════════════════════════════════════ */
+.dsf__step-1-container { display: flex !important; flex-direction: column !important; }
+.dsf__recurrency        { order: 1 !important; }
+.dsf__amount            { order: 2 !important; }
+.dsf__allow-upgrade     { order: 3 !important; }
+
+/* ── TOGGLE · dos botones (Cada mes / Una sola vez) ────────────── */
+.dsf__recurrency { margin: 0 0 var(--space-5) 0; }
+
+.dsf__recurrency-option-list {
+    display: flex !important;
+    gap: var(--space-3) !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.dsf__recurrency-option {
+    flex: 1;
+    padding: 12px !important;
+    background: var(--white) !important;
+    border: var(--border-w) solid var(--border) !important;
+    border-radius: var(--radius-toggle) !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: border-color var(--transition), background-color var(--transition);
+}
+.dsf__recurrency-option:hover { border-color: var(--border-hover) !important; }
+
+.dsf__recurrency-option--selected {
+    background: var(--ink) !important;
+    border-color: var(--ink) !important;
+}
+
+/* Texto del toggle renombrado a "Cada mes" / "Una sola vez"
+   (nativo: "Mensual"/"Única vez") — oculto + ::after por posición */
+.dsf__recurrency-option-label { font-size: 0 !important; cursor: pointer; }
+.dsf__recurrency-option-label::after {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--muted);
+    transition: color var(--transition);
+}
+.dsf__recurrency-option:nth-child(1) .dsf__recurrency-option-label::after { content: "Cada mes"; }
+.dsf__recurrency-option:nth-child(2) .dsf__recurrency-option-label::after { content: "Una sola vez"; }
+.dsf__recurrency-option--selected .dsf__recurrency-option-label::after { color: var(--white); }
+
+.dsf__recurrency-option-radio,
+.dsf__recurrency-option-radio-inner { display: none !important; }
+
+/* ════════════════════════════════════════════════════════════════
+   PASO 1 · MONTOS APILADOS (tarjetas blancas, seleccionado rojo)
+   ════════════════════════════════════════════════════════════════ */
+.dsf__amount-option-list,
+.dsf__amount > ul,
+ul:has(> .dsf__amount-option) {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 9px !important;
+    grid-template-columns: none !important;
+    margin: 0 0 var(--space-3) 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.dsf__amount-option {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    gap: 13px !important;
+    min-height: 52px !important;
+    padding: 15px 16px !important;
+    background: var(--white) !important;
+    border: var(--border-w) solid var(--border) !important;
+    border-radius: var(--radius-card) !important;
+    color: var(--ink) !important;
+    text-align: left !important;
+    cursor: pointer;
+    transition: border-color var(--transition), background-color var(--transition), box-shadow var(--transition);
+}
+.dsf__amount-option:hover { border-color: var(--border-hover) !important; }
+
+/* Radio: gris fino por defecto */
+.dsf__amount-option::before {
+    content: "";
+    flex: 0 0 20px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: var(--border-w) solid rgba(43, 43, 43, 0.25);
+    background: var(--white);
+    box-sizing: border-box;
+}
+
+/* Precio + descripción (descripción inyectada por posición) */
+.dsf__amount-option > div {
+    flex: 1;
+    min-width: 0;
+    font-weight: 800 !important;
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.5px;
+}
+.dsf__amount-option:nth-child(1) > div::after { content: "1 día de alojamiento, alimentación e insumos para una familia"; }
+.dsf__amount-option:nth-child(2) > div::after { content: "3 días de protección externa e insumos básicos para un cuidador"; }
+.dsf__amount-option:nth-child(3) > div::after { content: "1 semana completa de contingencia para una familia"; }
+.dsf__amount-option:nth-child(4) > div::after { content: "Tú decides cuánto aportar a las obras"; }
+.dsf__amount-option > div::after {
+    display: block;
+    margin-top: 2px;
+    font-weight: 500;
+    font-size: 13.5px;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: var(--muted);
+}
+
+/* Badge "Más elegido" (amarillo) en el 2º monto */
+.dsf__amount-option:nth-child(2)::after {
+    content: "Más elegido";
+    position: absolute;
+    top: 12px; right: 14px;
+    background: var(--amber);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+
+/* Seleccionado = rojo suave + borde rojo + halo + radio rojo relleno */
+.dsf__amount-option--selected {
+    background: var(--red-soft-bg) !important;
+    border-color: var(--red) !important;
+    box-shadow: 0 0 0 3px var(--red-ring) !important;
+}
+.dsf__amount-option--selected::before {
+    border: 6px solid var(--red) !important;
+    background: var(--white) !important;
+}
+
+/* "Otro monto" (4º) sin badge; borde igual */
+.dsf__amount-option-input {
+    background-color: var(--white) !important;
+    border: var(--border-w) solid #B9A9F0 !important;
+    border-radius: var(--radius-card) !important;
+    padding: 14px 16px !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    font-family: var(--font-family) !important;
+    color: var(--ink) !important;
+    height: 52px !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 3px rgba(214, 204, 251, 0.45) !important;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+.dsf__amount-option-input:focus {
+    border-color: #B9A9F0 !important;
+    outline: none !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   RECAP "TU APORTE" · label compartido (dinámico por selección)
+   ════════════════════════════════════════════════════════════════ */
+.dsf__amount-option-label {
+    display: block !important;
+    background: var(--cream) !important;
+    border-radius: var(--radius-card) !important;
+    padding: 15px 16px !important;
+    margin: var(--space-5) 0 var(--space-5) 0 !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    color: var(--muted) !important;
+}
+.dsf__amount-option-label::before {
+    content: "Tu aporte";
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    margin-bottom: 3px;
+}
+
+/* ── CHECKBOX "aumentar 15%" ────────────────────────────────────── */
+.dsf__allow-upgrade {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--space-3) !important;
+    margin: var(--space-4) 0 !important;
+}
+.dsf__allow-upgrade-checkbox {
+    width: 20px !important; height: 20px !important;
+    border: var(--border-w) solid var(--border-hover) !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    flex-shrink: 0;
+    transition: background-color var(--transition), border-color var(--transition);
+}
+.dsf__allow-upgrade-checkbox--checked {
+    background-color: var(--red) !important;
+    border-color: var(--red) !important;
+}
+.dsf__allow-upgrade-label {
+    font-size: 13px !important;
+    color: var(--text-color);
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   PASOS 2 y 3 · INPUTS (blancos, borde fino, foco lavanda)
+   ════════════════════════════════════════════════════════════════ */
+.dsf__group,
+.dsf__payment .dsf__group,
+.dsf__card-data .dsf__group {
+    position: relative;
+    margin-bottom: var(--space-4);
+    display: flex;
+    flex-direction: column;
+}
+
+.dsf__group label,
+.dsf__payment label,
+.dsf__card-data label,
+.payment-method-cc-number label,
+.payment-method-cc-verification-number label,
+.payment-method-cardholder-name label,
+.payment-method-cc-expiration-date label {
+    display: block !important;
+    margin: 0 0 var(--space-3) 0 !important;
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+    color: var(--muted) !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+.dsf__group input,
+.dsf__group select,
+.dsf__payment input,
+.dsf__card-data input {
+    box-sizing: border-box !important;
+    padding: 14px !important;
+    background-color: var(--white) !important;
+    border: var(--border-w) solid var(--border) !important;
+    border-radius: var(--radius-input) !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    font-family: var(--font-family) !important;
+    width: 100% !important;
+    height: 50px !important;
+    box-shadow: none !important;
+    color: var(--ink) !important;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+.dsf__group input:hover,
+.dsf__group select:hover { border-color: var(--border-hover) !important; }
+
+.dsf__group input:focus,
+.dsf__group select:focus,
+.dsf__payment input:focus,
+.dsf__card-data input:focus {
+    border-color: #B9A9F0 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(214, 204, 251, 0.55) !important;
+}
+.dsf__group input::placeholder,
+.dsf__group select::placeholder,
+.dsf__payment input::placeholder {
+    color: #767676 !important;
+    opacity: 1 !important;
+    font-weight: 500;
+}
+
+.dsf__group--error input,
+.dsf__group--error select { border-color: var(--red) !important; }
+.dsf__group-error-message {
+    color: var(--red) !important;
+    font-size: 12px !important;
+    margin-top: var(--space-2) !important;
+    font-weight: 500;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   BOTONES
+   ════════════════════════════════════════════════════════════════ */
+.dsf__buttons-container {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    gap: var(--space-4) !important;
+    width: 100% !important;
+    margin-top: var(--space-6) !important;
+    position: relative;
+}
+
+/* Trust line bajo el botón */
+.dsf__buttons-container::after {
+    content: "Pago seguro PSE / tarjeta · Certificado de donación · Cancelas cuando quieras";
+    display: block;
+    order: 99;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--muted-2);
+    margin-top: 2px;
+}
+
+/* Botón primario · rojo, caja normal (no mayúsculas) */
+.dsf__button-next,
+button[type="submit"] {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    border: none !important;
+    background: var(--red) !important;
+    border-radius: var(--radius-btn) !important;
+    padding: 16px !important;
+    cursor: pointer !important;
+    min-height: 52px !important;
+    height: auto !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transition: background-color var(--transition);
+    font-size: 0 !important;
+    color: transparent !important;
+}
+.dsf__button-next::after,
+button[type="submit"]::after {
+    content: var(--btn-step-1);
+    font-size: 16.5px !important;
+    color: var(--white) !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+.dsf:has(.dsf__step-2-container) .dsf__button-next::after { content: var(--btn-step-2); }
+.dsf:has(.dsf__step-3-container) .dsf__button-next::after,
+.dsf:has(.dsf__payment) .dsf__button-next::after,
+.dsf:has(.dsf__card-data) .dsf__button-next::after { content: var(--btn-step-3); }
+
+.dsf__button-next:hover { background-color: var(--red-hover) !important; }
+
+/* Botón secundario · Volver */
+.dsf__button-prev {
+    background: transparent !important;
+    border: none !important;
+    color: var(--muted-2) !important;
+    text-decoration: none !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    padding: var(--space-3) !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    width: 100% !important;
+    transition: color var(--transition);
+}
+.dsf__button-prev:hover { color: var(--ink) !important; }
+
+/* ── AVISO LEGAL ────────────────────────────────────────────────── */
+.dsf__legal-notice-container {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: var(--space-3) !important;
+    margin: var(--space-5) 0 !important;
+}
+.dsf__legal-notice-checkbox {
+    width: 18px !important; height: 18px !important;
+    border: var(--border-w) solid var(--border-hover) !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background-color var(--transition), border-color var(--transition);
+}
+.dsf__legal-notice-checkbox--checked {
+    background-color: var(--red) !important;
+    border-color: var(--red) !important;
+}
+.dsf__legal-notice-label,
+.dsf__legal-notice {
+    font-size: 12px !important;
+    color: var(--muted) !important;
+    line-height: 1.5;
+}
+.dsf__legal-notice a { color: var(--red); text-decoration: underline; }
+
+.dsf__security-message { display: none !important; }
+
+.dsf__loader-container { color: var(--red) !important; }
+.dsf__thanks-message,
+.dsf__error-message {
+    text-align: center;
+    padding: var(--space-7);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+.dsf__error-message { color: var(--red) !important; }
+
+/* ════════════════════════════════════════════════════════════════
+   RESPONSIVE · ≤480px
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+    .dsf { padding: 52px var(--space-5) var(--space-7) var(--space-5) !important; }
+    .dsf::before { left: var(--space-5); }
+    .dsf__amount-option > div { font-size: 19px !important; }
+}
