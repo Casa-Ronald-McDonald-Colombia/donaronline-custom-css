@@ -404,6 +404,36 @@ ul:has(> .dsf__amount-option) {
 }
 
 /* ════════════════════════════════════════════════════════════════
+   PASO 3 · Campos de pago/documento en UNA sola columna
+   (DonarOnline los empareja 2-up; forzamos la fila a apilar)
+   ════════════════════════════════════════════════════════════════ */
+.dsf__payment,
+.dsf__card-data { display: block !important; }
+
+/* La fila que contiene dos campos → block, así sus hijos se apilan */
+.dsf__payment > div,
+.dsf__card-data > div { display: block !important; }
+
+/* Cada campo/grupo a ancho completo */
+.dsf__payment .dsf__group,
+.dsf__card-data .dsf__group,
+.payment-method-cc-number,
+.payment-method-cc-expiration-date,
+.payment-method-cc-verification-number,
+.payment-method-cardholder-name,
+[class*="payment-method-document"],
+[class*="document-type"],
+[class*="document-number"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+    float: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box;
+}
+
+/* ════════════════════════════════════════════════════════════════
    BOTONES
    ════════════════════════════════════════════════════════════════ */
 .dsf__buttons-container {
