@@ -410,16 +410,14 @@ ul:has(> .dsf__amount-option) {
 .dsf__payment,
 .dsf__card-data { display: block !important; }
 
-/* La fila que contiene dos campos → block, así sus hijos se apilan */
-.dsf__payment > div,
-.dsf__card-data > div { display: block !important; }
+/* Aplanar TODAS las filas MENOS la de Fecha de expiración + CVV */
+.dsf__payment > div:not(:has(.payment-method-cc-expiration-date)),
+.dsf__card-data > div:not(:has(.payment-method-cc-expiration-date)) { display: block !important; }
 
-/* Cada campo/grupo a ancho completo */
+/* Campos a ancho completo (el par exp+CVV se maneja aparte) */
 .dsf__payment .dsf__group,
 .dsf__card-data .dsf__group,
 .payment-method-cc-number,
-.payment-method-cc-expiration-date,
-.payment-method-cc-verification-number,
 .payment-method-cardholder-name,
 [class*="payment-method-document"],
 [class*="document-type"],
@@ -431,6 +429,26 @@ ul:has(> .dsf__amount-option) {
     margin-left: 0 !important;
     margin-right: 0 !important;
     box-sizing: border-box;
+}
+
+/* Fecha de expiración + CVV: 2 columnas SOLO en desktop */
+@media (min-width: 769px) {
+    .dsf__payment > div:has(.payment-method-cc-expiration-date),
+    .dsf__card-data > div:has(.payment-method-cc-expiration-date) {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+    }
+    .payment-method-cc-expiration-date,
+    .payment-method-cc-verification-number { width: auto !important; max-width: none !important; }
+}
+
+/* En móvil ese par va apilado (cada uno en su fila) */
+@media (max-width: 768px) {
+    .dsf__payment > div:has(.payment-method-cc-expiration-date),
+    .dsf__card-data > div:has(.payment-method-cc-expiration-date) { display: block !important; }
+    .payment-method-cc-expiration-date,
+    .payment-method-cc-verification-number { width: 100% !important; max-width: 100% !important; }
 }
 
 /* ════════════════════════════════════════════════════════════════
