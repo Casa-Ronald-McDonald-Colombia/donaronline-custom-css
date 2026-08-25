@@ -116,14 +116,18 @@ body {
 .dsf__recurrency { margin: 0 0 var(--space-5) 0; }
 
 .dsf__recurrency-option-list {
-    display: flex !important;
+    display: grid !important;               /* Grid = 2 columnas iguales, full width */
+    grid-template-columns: 1fr 1fr !important;
     gap: var(--space-3) !important;
+    width: 100% !important;
     background: transparent !important;
     padding: 0 !important;
 }
 
 .dsf__recurrency-option {
-    flex: 1;
+    width: auto !important;                 /* Llena la celda del grid */
+    max-width: none !important;
+    margin: 0 !important;
     padding: 12px !important;
     background: var(--white) !important;
     border: var(--border-w) solid var(--border) !important;
