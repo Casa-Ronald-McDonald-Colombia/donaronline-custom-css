@@ -564,3 +564,19 @@ button[type="submit"]::after {
     .dsf::before { left: var(--space-5); }
     .dsf__amount-option > div { font-size: 19px !important; }
 }
+
+/* ── MÓVIL · espaciado vertical más compacto entre campos ──────── */
+@media (max-width: 768px) {
+    .dsf__group,
+    .dsf__payment .dsf__group,
+    .dsf__card-data .dsf__group { margin-bottom: 8px !important; }
+
+    .dsf__group label,
+    .dsf__payment label,
+    .dsf__card-data label { margin-bottom: 4px !important; }
+
+    .dsf__group input,
+    .dsf__group select,
+    .dsf__payment input,
+    .dsf__card-data input { height: 46px !important; padding: 11px 14px !important; }
+}
