@@ -216,7 +216,7 @@ ul:has(> .dsf__amount-option) {
 }
 /* Orden DESCENDENTE en la campaña: 1)$560.000  2)$240.000  3)$80.000  4)Otro */
 .dsf__amount-option:nth-child(1) > div::after { content: "1 semana completa de contingencia para una familia"; }
-.dsf__amount-option:nth-child(2) > div::after { content: "3 días de protección externa e insumos básicos para un cuidador"; }
+.dsf__amount-option:nth-child(2) > div::after { content: "3 días de insumos básicos para un cuidador"; }
 .dsf__amount-option:nth-child(3) > div::after { content: "1 día de alojamiento, alimentación e insumos para una familia"; }
 .dsf__amount-option:nth-child(4) > div::after { content: "Tú decides cuánto aportar a las obras"; }
 .dsf__amount-option > div::after {
