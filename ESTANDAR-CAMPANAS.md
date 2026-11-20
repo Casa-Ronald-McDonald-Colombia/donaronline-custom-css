@@ -13,7 +13,7 @@ repo**, servido por CDN y embebido con `?css=<base64>` dentro de un iframe.
 | Skin | Archivo base | Look | Dónde se usa |
 |---|---|---|---|
 | **Chips** | `css/crmd-oficial-v1.css` | Montos en grilla de 3 columnas | `/donar/` (producción) |
-| **Sitio** | `css/crmd-cali-v3.css`, `css/cena-bogota-2026.css` | Tarjetas verticales con descripción + badge "Más elegido" + caja "Tu aporte" | Casa Cali, Cena 25 años |
+| **Sitio** | `css/cena-bogota-2026.css` (vivo en `main`); `crmd-cali-v3.css` (pinneado en commit histórico, no en `main`) | Tarjetas verticales con descripción + badge "Más elegido" + caja "Tu aporte" | Casa Cali, Cena 25 años |
 
 Para campañas nuevas con **descripción por monto**, usar el **skin Sitio**.
 
@@ -69,8 +69,8 @@ Para campañas nuevas con **descripción por monto**, usar el **skin Sitio**.
 ## 5. Receta: campaña nueva en 5 pasos
 
 ```bash
-# 1. Copiar el skin Sitio a un archivo nuevo
-cp css/crmd-cali-v3.css css/<slug>.css
+# 1. Copiar el skin Sitio vivo a un archivo nuevo
+cp css/cena-bogota-2026.css css/<slug>.css
 
 # 2. Editar css/<slug>.css:
 #    - :root  -> colores (acento, texto, bordes)
@@ -127,7 +127,7 @@ iframe para pegar (sustituir `<UUID>` y `<BASE64>`):
 | Campaña | UUID DonarOnline | CSS | Skin |
 |---|---|---|---|
 | CRMD general | `25107305-ccc8-415c-aca3-d3d944a246f3` | `crmd-oficial-v1.css` | Chips |
-| Casa Cali | `d674f6ed-bfb0-4ebb-9855-cd6b96bb3fa9` | `crmd-cali-v3.css` | Sitio |
+| Casa Cali | `d674f6ed-bfb0-4ebb-9855-cd6b96bb3fa9` | `crmd-cali-v3.css` (pinneado en commit `0a98a3a`, no en `main`) | Sitio |
 | Cena Bogotá 2026 | `a4725fa9-2d19-4766-a4a7-002467e29371` | `cena-bogota-2026.css` | Sitio morado `#91187d` |
 
 ---
