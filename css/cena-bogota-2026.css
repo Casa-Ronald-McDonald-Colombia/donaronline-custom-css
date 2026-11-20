@@ -1,69 +1,72 @@
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
-
 /* ════════════════════════════════════════════════════════════════
-   CAMPAÑA · Cena de Recaudación Bogotá 2026 · 25 Años
-   Casa Ronald McDonald Colombia
+   CRMD · Formulario Multi-Pasos DonarOnline · CENA BOGOTÁ 2026 (25 años)
    ────────────────────────────────────────────────────────────────
-   Variante MORADA del formulario DonarOnline para la gala de los
-   25 años. Deriva de crmd-oficial-v1.css (producción). Solo cambia:
-     · paleta (rojo CRMD → morado 25 años)
-     · tipografía (Figtree, para pegar con la landing de la cena)
-     · color de las sombras del botón (rojo → morado)
+   Variante MORADA del skin "Sitio" de Cali (crmd-cali-v3.css).
+   MISMO layout (tarjetas blancas, badge "Más elegido", caja "Tu aporte",
+   Figtree). Solo cambia el acento: rojo CRMD -> morado 25 años (#8E2C8E).
+   Todo tokenizado en :root; el cuerpo queda idéntico a Cali.
 
    Campaña DonarOnline (UUID): a4725fa9-2d19-4766-a4a7-002467e29371
    Slug: casa-ronald-mcdonald-colombia/cena-casa-ronald-mcdonald-colombia-bogota-2026
-
-   NO editar debajo del bloque :root, salvo el color de las sombras
-   del botón (ya ajustadas a morado en este archivo).
+   Sirve por: cdn.jsdelivr.net (mismo CDN que Cali en producción).
+   Flujo: editar :root -> commit -> nuevo hash -> Base64 -> ?css= del iframe.
    ════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-    /* ── BRAND · morado gala 25 años ─────────────────────────────── */
-    --main-color:        #8E2C8E;   /* Morado CRMD 25 años · botones, montos, focus */
-    --main-color-hover:  #702470;   /* Morado oscuro · hover (~18% más oscuro) */
-    --main-color-soft:   rgba(142, 44, 142, 0.08);   /* Tinte 8% · backgrounds */
-    --main-color-ring:   rgba(142, 44, 142, 0.20);   /* Ring focus 20% */
+    /* ── PALETA "SITIO" ─────────────────────────────────────────── */
+    --ink:            #2B2B2B;
+    --muted:          #595959;
+    --muted-2:        #5E5E5E;
 
-    --bg-color:          transparent;
-    --text-color:        #241226;   /* Tinta berenjena · match landing de la cena */
-    --text-muted:        #6E6274;   /* Gris malva · labels y ayudas */
-    --input-bg:          #FFFFFF;
-    --input-border:      #E4DCEF;   /* Lila sutil · bordes en reposo */
-    --input-border-hover:#CDBDEA;   /* Lila marca · bordes en hover */
+    --white:          #FFFFFF;   /* Tarjeta y opciones */
+    --cream:          #FFFDE9;   /* Caja recap "Tu aporte" */
+    --lavender:       #D6CCFB;   /* Resumen paso 3 */
+    --amber:          #FFBC0D;   /* Badge "Más elegido" */
 
-    /* ── MENSAJES POR PASO (iguales a producción, corazón morado) ─ */
-    --msg-step-1: "Hoy puedes hacer que una familia esté cerca a su hijo mientras recibe tratamiento médico 💜";
-    --msg-step-2: "Queremos conocerte,\A cuéntanos un poco de ti 📝";
-    --msg-step-3: "¡Ya estás a un solo paso de ayudar a una familia! 💜";
+    --red:            #8E2C8E;
+    --red-hover:      #702470;
+    --red-soft-bg:    #F7F1FB;                    /* Fondo del seleccionado */
+    --red-ring:       rgba(142, 44, 142, 0.12);      /* Halo del seleccionado */
 
-    /* ── TEXTO DE BOTÓN POR PASO ────────────────────────────────── */
-    --btn-step-1: "CONTINUAR CON MI APORTE";
-    --btn-step-2: "CONTINUAR";
-    --btn-step-3: "DONAR AHORA";
+    --border:         rgba(43, 43, 43, 0.14);     /* Borde fino por defecto */
+    --border-hover:   rgba(43, 43, 43, 0.32);
+
+    --bg-color:       transparent;
+    --text-color:     var(--ink);
+    --input-bg:       var(--white);
+    --input-border:   var(--border);
+
+    /* ── ETIQUETA DE PASO (arriba de la tarjeta, pequeña) ───────── */
+    --msg-step-1: "Elige tu aporte";
+    --msg-step-2: "Tus datos";
+    --msg-step-3: "Cómo quieres pagar";
+
+    /* ── TEXTO DE BOTÓN POR PASO (caja normal, no mayúsculas) ────── */
+    --btn-step-1: "Continuar con mi aporte";
+    --btn-step-2: "Ir al pago";
+    --btn-step-3: "Donar ahora";
 
     /* ── DESIGN TOKENS ──────────────────────────────────────────── */
-    --font-family:       'Figtree', 'Inter', system-ui, sans-serif;
-    --radius-input:      10px;
-    --radius-btn:        10px;
-    --radius-pill:       999px;
+    --font-family:    'Figtree', system-ui, sans-serif;
+    --radius-btn:     8px;
+    --radius-input:   10px;
+    --radius-card:    12px;
+    --radius-toggle:  8px;
+    --border-w:       1.5px;
 
-    --space-2:           4px;
-    --space-3:           8px;
-    --space-4:           12px;
-    --space-5:           16px;
-    --space-6:           20px;
-    --space-7:           24px;
-    --space-8:           32px;
-    --space-9:           40px;
+    --space-2:  4px;  --space-3:  8px;  --space-4: 12px;  --space-5: 16px;
+    --space-6: 20px;  --space-7: 24px;  --space-8: 32px;
 
-    --ease:              cubic-bezier(0.22, 0.61, 0.36, 1);
-    --transition:        180ms var(--ease);
+    --ease:       cubic-bezier(0.22, 0.61, 0.36, 1);
+    --transition: 150ms var(--ease);
 }
+
 /* ════════════════════════════════════════════════════════════════
-   ⛔ NO EDITAR DEBAJO DE ESTA LÍNEA
+   ⛔ NO EDITAR DEBAJO DE ESTA LÍNEA (salvo que sepas qué haces)
    ════════════════════════════════════════════════════════════════ */
 
-/* ── BASE ──────────────────────────────────────────────────────── */
 body {
     background-color: var(--bg-color) !important;
     font-family: var(--font-family) !important;
@@ -72,213 +75,253 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── CONTENEDOR PRINCIPAL ──────────────────────────────────────── */
+/* ── TARJETA BLANCA ────────────────────────────────────────────── */
 .dsf {
     width: 100% !important;
-    max-width: 420px !important;
+    max-width: 512px !important;
     margin: 0 auto !important;
-    padding: 96px 0 var(--space-6) 0 !important;
-    background: var(--bg-color) !important;
-    box-shadow: none !important;
+    padding: 56px var(--space-7) var(--space-8) var(--space-7) !important;
+    background: var(--white) !important;
     border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 4px rgba(43, 43, 43, 0.04), 0 12px 32px rgba(43, 43, 43, 0.07) !important;
     position: relative;
+    box-sizing: border-box;
 }
 
-/* ── MENSAJE POR PASO (dinámico) ───────────────────────────────── */
+/* Etiqueta de paso (pequeña, arriba a la izquierda) */
 .dsf::before {
     content: var(--msg-step-1);
     display: block !important;
     position: absolute;
-    top: var(--space-3);
-    left: 0;
-    right: 0;
-    padding: 0 var(--space-4);
-    font-size: 19px !important;
+    top: var(--space-7);
+    left: var(--space-7);
+    font-size: 15px !important;
     font-weight: 700 !important;
-    line-height: 1.35 !important;
-    letter-spacing: -0.01em;
-    text-align: center !important;
-    color: var(--main-color) !important;
-    white-space: pre-line !important;
-    box-sizing: border-box;
+    color: var(--ink) !important;
+    letter-spacing: 0;
 }
-
-.dsf:has(.dsf__step-2-container)::before {
-    content: var(--msg-step-2);
-}
-
+.dsf:has(.dsf__step-2-container)::before { content: var(--msg-step-2); }
 .dsf:has(.dsf__step-3-container)::before,
 .dsf:has(.dsf__payment)::before,
-.dsf:has(.dsf__card-data)::before {
-    content: var(--msg-step-3);
-}
+.dsf:has(.dsf__card-data)::before { content: var(--msg-step-3); }
 
 /* ════════════════════════════════════════════════════════════════
-   PASO 1 · MONTOS
+   PASO 1 · Orden: recurrencia → montos → recap
    ════════════════════════════════════════════════════════════════ */
+.dsf__step-1-container { display: flex !important; flex-direction: column !important; }
+.dsf__recurrency        { order: 1 !important; }
+.dsf__amount            { order: 2 !important; }
+.dsf__allow-upgrade     { order: 3 !important; }
 
-/* ── ORDEN VISUAL PASO 1 ─────────────────────────────────────────
-   Forzamos que la pregunta de recurrencia (Mensual / Única vez)
-   aparezca ANTES que los montos. El usuario decide primero el
-   compromiso (frecuencia) y luego el valor — anclaje psicológico
-   más sólido para conversión a donación mensual. */
-.dsf__step-1-container {
-    display: flex !important;
-    flex-direction: column !important;
-}
-.dsf__recurrency      { order: 1 !important; }
-.dsf__amount          { order: 2 !important; }
-.dsf__allow-upgrade   { order: 3 !important; }
-
-.dsf__amount-option-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-3);
-    margin-top: var(--space-6);
-    margin-bottom: var(--space-6);
-}
-
-.dsf__amount-option {
-    padding: var(--space-4) var(--space-3);
-    background-color: var(--input-bg);
-    border: 1.5px solid var(--input-border);
-    color: var(--text-color);
-    font-weight: 600;
-    font-size: 15px;
-    border-radius: var(--radius-input);
-    text-align: center;
-    cursor: pointer;
-    transition: background-color var(--transition),
-                border-color var(--transition),
-                color var(--transition),
-                transform var(--transition);
-}
-
-.dsf__amount-option:hover {
-    border-color: var(--main-color);
-    color: var(--main-color);
-}
-
-.dsf__amount-option--selected {
-    background-color: var(--main-color) !important;
-    color: #fff !important;
-    border-color: var(--main-color) !important;
-    font-weight: 700 !important;
-}
-
-.dsf__amount-option--selected:hover {
-    background-color: var(--main-color-hover) !important;
-    border-color: var(--main-color-hover) !important;
-    color: #fff !important;
-}
-
-/* "Otro monto" — input numérico
-   ──────────────────────────────────────────────────────────────
-   FIX: el padre .dsf__amount-option al recibir --selected fuerza
-   color:#fff y el input hijo lo hereda, dejando el texto invisible.
-   Forzamos color:--text-color para romper la herencia. */
-.dsf__amount-option-input {
-    background-color: var(--input-bg) !important;
-    border: 1.5px solid var(--input-border) !important;
-    border-radius: var(--radius-input) !important;
-    padding: var(--space-4) var(--space-5) !important;
-    font-size: 15px !important;
-    font-family: var(--font-family) !important;
-    color: var(--text-color) !important;
-    height: 48px !important;
-    transition: border-color var(--transition), box-shadow var(--transition);
-}
-
-.dsf__amount-option-input:focus {
-    border-color: var(--main-color) !important;
-    outline: none !important;
-    box-shadow: 0 0 0 3px var(--main-color-ring) !important;
-}
-
-/* ── RECURRENCIA: Mensual / Única vez (pills) ───────────────────── */
-.dsf__recurrency {
-    margin: var(--space-5) 0 var(--space-3) 0;
-}
+/* ── TOGGLE · dos botones (Cada mes / Una sola vez) ────────────── */
+.dsf__recurrency { margin: 0 0 var(--space-5) 0; }
 
 .dsf__recurrency-option-list {
-    display: flex !important;
+    display: grid !important;               /* Grid = 2 columnas iguales, full width */
+    grid-template-columns: 1fr 1fr !important;
     gap: var(--space-3) !important;
-    flex-wrap: wrap;
+    width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
 }
 
 .dsf__recurrency-option {
-    flex: 1;
-    padding: var(--space-4) var(--space-5) !important;
-    background: var(--input-bg) !important;
-    border: 1.5px solid var(--input-border) !important;
-    border-radius: var(--radius-pill) !important;
+    width: auto !important;                 /* Llena la celda del grid */
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    background: var(--white) !important;
+    border: var(--border-w) solid var(--border) !important;
+    border-radius: var(--radius-toggle) !important;
     cursor: pointer !important;
-    transition: border-color var(--transition),
-                background-color var(--transition),
-                color var(--transition);
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: var(--space-3) !important;
+    transition: border-color var(--transition), background-color var(--transition);
 }
-
-.dsf__recurrency-option:hover {
-    border-color: var(--main-color) !important;
-}
+.dsf__recurrency-option:hover { border-color: var(--border-hover) !important; }
 
 .dsf__recurrency-option--selected {
-    background: var(--main-color) !important;   /* Rojo sólido — mismo estilo que monto seleccionado */
-    border-color: var(--main-color) !important;
+    background: var(--ink) !important;
+    border-color: var(--ink) !important;
 }
 
-.dsf__recurrency-option--selected:hover {
-    background: var(--main-color-hover) !important;
-    border-color: var(--main-color-hover) !important;
-}
-
-.dsf__recurrency-option--selected .dsf__recurrency-option-label {
-    color: #fff !important;
-    font-weight: 700 !important;
-}
-
-.dsf__recurrency-option-label {
-    font-size: 14px !important;
-    font-weight: 500;
-    color: var(--text-color);
-    cursor: pointer;
+/* Texto del toggle renombrado a "Cada mes" / "Una sola vez"
+   (nativo: "Mensual"/"Única vez") — oculto + ::after por posición */
+.dsf__recurrency-option-label { font-size: 0 !important; cursor: pointer; }
+.dsf__recurrency-option-label::after {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--muted);
     transition: color var(--transition);
 }
+.dsf__recurrency-option:nth-child(1) .dsf__recurrency-option-label::after { content: "Cada mes"; }
+.dsf__recurrency-option:nth-child(2) .dsf__recurrency-option-label::after { content: "Una sola vez"; }
+.dsf__recurrency-option--selected .dsf__recurrency-option-label::after { color: var(--white); }
 
-/* Radio interno de la pill · oculto para look limpio */
 .dsf__recurrency-option-radio,
-.dsf__recurrency-option-radio-inner {
-    display: none !important;
+.dsf__recurrency-option-radio-inner { display: none !important; }
+
+/* ════════════════════════════════════════════════════════════════
+   PASO 1 · MONTOS APILADOS (tarjetas blancas, seleccionado rojo)
+   ════════════════════════════════════════════════════════════════ */
+.dsf__amount-option-list,
+.dsf__amount > ul,
+ul:has(> .dsf__amount-option) {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 9px !important;
+    grid-template-columns: none !important;
+    margin: 0 0 var(--space-3) 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
 }
 
-/* ── CHECKBOX "Acepto aumentar..." ──────────────────────────────── */
+.dsf__amount-option {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    gap: 13px !important;
+    min-height: 52px !important;
+    padding: 15px 16px !important;
+    background: var(--white) !important;
+    border: var(--border-w) solid var(--border) !important;
+    border-radius: var(--radius-card) !important;
+    color: var(--ink) !important;
+    text-align: left !important;
+    cursor: pointer;
+    transition: border-color var(--transition), background-color var(--transition), box-shadow var(--transition);
+}
+.dsf__amount-option:hover { border-color: var(--border-hover) !important; }
+
+/* Radio: gris fino por defecto */
+.dsf__amount-option::before {
+    content: "";
+    flex: 0 0 20px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: var(--border-w) solid rgba(43, 43, 43, 0.25);
+    background: var(--white);
+    box-sizing: border-box;
+}
+
+/* Precio + descripción (descripción inyectada por posición) */
+.dsf__amount-option > div {
+    flex: 1;
+    min-width: 0;
+    font-weight: 800 !important;
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.5px;
+}
+/* Orden DESCENDENTE en la campaña: 1)$560.000  2)$240.000  3)$80.000  4)Otro */
+.dsf__amount-option:nth-child(1) > div::after { content: "1 semana completa de contingencia para una familia"; }
+.dsf__amount-option:nth-child(2) > div::after { content: "3 días de insumos básicos para un cuidador"; }
+.dsf__amount-option:nth-child(3) > div::after { content: "1 día de alojamiento, alimentación e insumos para una familia"; }
+.dsf__amount-option:nth-child(4) > div::after { content: "Tú decides cuánto aportar a las obras"; }
+.dsf__amount-option > div::after {
+    display: block;
+    margin-top: 2px;
+    font-weight: 500;
+    font-size: 13.5px;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: var(--muted);
+}
+
+/* Badge "Más elegido" (amarillo) en el 2º monto */
+.dsf__amount-option:nth-child(2)::after {
+    content: "Más elegido";
+    position: absolute;
+    top: 12px; right: 14px;
+    background: var(--amber);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+
+/* Seleccionado = rojo suave + borde rojo + halo + radio rojo relleno */
+.dsf__amount-option--selected {
+    background: var(--red-soft-bg) !important;
+    border-color: var(--red) !important;
+    box-shadow: 0 0 0 3px var(--red-ring) !important;
+}
+.dsf__amount-option--selected::before {
+    border: 6px solid var(--red) !important;
+    background: var(--white) !important;
+}
+
+/* "Otro monto" (4º) sin badge; borde igual */
+.dsf__amount-option-input {
+    background-color: var(--white) !important;
+    border: var(--border-w) solid #B9A9F0 !important;
+    border-radius: var(--radius-card) !important;
+    padding: 14px 16px !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    font-family: var(--font-family) !important;
+    color: var(--ink) !important;
+    height: 52px !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 3px rgba(214, 204, 251, 0.45) !important;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+.dsf__amount-option-input:focus {
+    border-color: #B9A9F0 !important;
+    outline: none !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   RECAP "TU APORTE" · label compartido (dinámico por selección)
+   ════════════════════════════════════════════════════════════════ */
+.dsf__amount-option-label {
+    display: block !important;
+    background: var(--cream) !important;
+    border-radius: var(--radius-card) !important;
+    padding: 15px 16px !important;
+    margin: var(--space-5) 0 var(--space-5) 0 !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    color: var(--muted) !important;
+}
+.dsf__amount-option-label::before {
+    content: "Tu aporte";
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    margin-bottom: 3px;
+}
+
+/* ── CHECKBOX "aumentar 15%" ────────────────────────────────────── */
 .dsf__allow-upgrade {
     display: flex !important;
     align-items: center !important;
     gap: var(--space-3) !important;
-    margin: var(--space-5) 0 !important;
+    margin: var(--space-4) 0 !important;
 }
-
 .dsf__allow-upgrade-checkbox {
-    width: 20px !important;
-    height: 20px !important;
-    border: 1.5px solid var(--input-border) !important;
-    border-radius: 6px !important;
+    width: 20px !important; height: 20px !important;
+    border: var(--border-w) solid var(--border-hover) !important;
+    border-radius: 5px !important;
     cursor: pointer !important;
-    transition: background-color var(--transition),
-                border-color var(--transition);
     flex-shrink: 0;
+    transition: background-color var(--transition), border-color var(--transition);
 }
-
 .dsf__allow-upgrade-checkbox--checked {
-    background-color: var(--main-color) !important;
-    border-color: var(--main-color) !important;
+    background-color: var(--red) !important;
+    border-color: var(--red) !important;
 }
-
 .dsf__allow-upgrade-label {
     font-size: 13px !important;
     color: var(--text-color);
@@ -287,14 +330,13 @@ body {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   PASOS 2 y 3 · INPUTS Y LABELS
+   PASOS 2 y 3 · INPUTS (blancos, borde fino, foco lavanda)
    ════════════════════════════════════════════════════════════════ */
-
 .dsf__group,
 .dsf__payment .dsf__group,
 .dsf__card-data .dsf__group {
     position: relative;
-    margin-bottom: var(--space-4);   /* 12px · más compacto */
+    margin-bottom: var(--space-4);
     display: flex;
     flex-direction: column;
 }
@@ -307,17 +349,15 @@ body {
 .payment-method-cardholder-name label,
 .payment-method-cc-expiration-date label {
     display: block !important;
-    position: relative !important;
     margin: 0 0 var(--space-3) 0 !important;
     font-size: 13px !important;
     line-height: 1.3 !important;
-    color: var(--text-muted) !important;
-    font-weight: 500 !important;
-    pointer-events: auto !important;
-    height: auto !important;
-    overflow: visible !important;
+    color: var(--muted) !important;
+    font-weight: 600 !important;
     text-transform: none !important;
     letter-spacing: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
 }
 
 .dsf__group input,
@@ -325,66 +365,121 @@ body {
 .dsf__payment input,
 .dsf__card-data input {
     box-sizing: border-box !important;
-    padding: var(--space-4) var(--space-5) !important;
-    background-color: var(--input-bg) !important;
-    border: 1.5px solid var(--input-border) !important;
+    padding: 14px !important;
+    background-color: var(--white) !important;
+    border: var(--border-w) solid var(--border) !important;
     border-radius: var(--radius-input) !important;
     font-size: 15px !important;
+    font-weight: 500 !important;
     font-family: var(--font-family) !important;
     width: 100% !important;
-    height: 48px !important;
+    height: 50px !important;
     box-shadow: none !important;
-    color: var(--text-color) !important;
+    color: var(--ink) !important;
     transition: border-color var(--transition), box-shadow var(--transition);
 }
-
 .dsf__group input:hover,
-.dsf__group select:hover {
-    border-color: var(--input-border-hover) !important;
-}
+.dsf__group select:hover { border-color: var(--border-hover) !important; }
 
 .dsf__group input:focus,
 .dsf__group select:focus,
 .dsf__payment input:focus,
 .dsf__card-data input:focus {
-    border-color: var(--main-color) !important;
+    border-color: #B9A9F0 !important;
     outline: none !important;
-    box-shadow: 0 0 0 3px var(--main-color-ring) !important;
+    box-shadow: 0 0 0 3px rgba(214, 204, 251, 0.55) !important;
 }
-
 .dsf__group input::placeholder,
 .dsf__group select::placeholder,
 .dsf__payment input::placeholder {
-    color: #B0B0B0 !important;
+    color: #767676 !important;
     opacity: 1 !important;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 .dsf__group--error input,
-.dsf__group--error select {
-    border-color: var(--main-color) !important;
-}
-
+.dsf__group--error select { border-color: var(--red) !important; }
 .dsf__group-error-message {
-    color: var(--main-color) !important;
+    color: var(--red) !important;
     font-size: 12px !important;
     margin-top: var(--space-2) !important;
     font-weight: 500;
 }
 
 /* ════════════════════════════════════════════════════════════════
-   BOTONES (Continuar / Volver)
+   PASO 3 · Campos de pago/documento en UNA sola columna
+   (DonarOnline los empareja 2-up; forzamos la fila a apilar)
    ════════════════════════════════════════════════════════════════ */
+.dsf__payment,
+.dsf__card-data { display: block !important; }
 
+/* Aplanar TODAS las filas MENOS la de Fecha de expiración + CVV */
+.dsf__payment > div:not(:has(.payment-method-cc-expiration-date)),
+.dsf__card-data > div:not(:has(.payment-method-cc-expiration-date)) { display: block !important; }
+
+/* Campos a ancho completo (el par exp+CVV se maneja aparte) */
+.dsf__payment .dsf__group,
+.dsf__card-data .dsf__group,
+.payment-method-cc-number,
+.payment-method-cardholder-name,
+[class*="payment-method-document"],
+[class*="document-type"],
+[class*="document-number"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+    float: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box;
+}
+
+/* Fecha de expiración + CVV: 2 columnas SOLO en desktop */
+@media (min-width: 769px) {
+    .dsf__payment > div:has(.payment-method-cc-expiration-date),
+    .dsf__card-data > div:has(.payment-method-cc-expiration-date) {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+    }
+    .payment-method-cc-expiration-date,
+    .payment-method-cc-verification-number { width: auto !important; max-width: none !important; }
+}
+
+/* En móvil ese par va apilado (cada uno en su fila) */
+@media (max-width: 768px) {
+    .dsf__payment > div:has(.payment-method-cc-expiration-date),
+    .dsf__card-data > div:has(.payment-method-cc-expiration-date) { display: block !important; }
+    .payment-method-cc-expiration-date,
+    .payment-method-cc-verification-number { width: 100% !important; max-width: 100% !important; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   BOTONES
+   ════════════════════════════════════════════════════════════════ */
 .dsf__buttons-container {
     display: flex !important;
     flex-direction: column-reverse !important;
     gap: var(--space-4) !important;
     width: 100% !important;
     margin-top: var(--space-6) !important;
+    position: relative;
 }
 
-/* ── BOTÓN PRIMARIO (Continuar / Donar) ─────────────────────────── */
+/* Trust line bajo el botón */
+.dsf__buttons-container::after {
+    content: "Pago seguro PSE / tarjeta · Certificado de donación · Cancelas cuando quieras";
+    display: block;
+    order: 99;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--muted-2);
+    margin-top: 2px;
+}
+
+/* Botón primario · rojo, caja normal (no mayúsculas) */
 .dsf__button-next,
 button[type="submit"] {
     display: flex !important;
@@ -392,131 +487,86 @@ button[type="submit"] {
     align-items: center !important;
     width: 100% !important;
     border: none !important;
-    background: var(--main-color) !important;
+    background: var(--red) !important;
     border-radius: var(--radius-btn) !important;
-    padding: var(--space-5) !important;
+    padding: 16px !important;
     cursor: pointer !important;
     min-height: 52px !important;
     height: auto !important;
     margin: 0 !important;
-    transition: background-color var(--transition), transform var(--transition);
-    box-shadow: 0 4px 14px rgba(142, 44, 142, 0.22);
-    /* Ocultar texto original — usamos ::after con var() */
+    box-shadow: none !important;
+    transition: background-color var(--transition);
     font-size: 0 !important;
     color: transparent !important;
 }
-
 .dsf__button-next::after,
 button[type="submit"]::after {
     content: var(--btn-step-1);
-    font-size: 14px !important;
-    color: #fff !important;
+    font-size: 16.5px !important;
+    color: var(--white) !important;
     font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.04em !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
     line-height: 1.2 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
     white-space: normal !important;
     text-align: center !important;
     width: 100% !important;
 }
-
-.dsf:has(.dsf__step-2-container) .dsf__button-next::after {
-    content: var(--btn-step-2);
-}
-
+.dsf:has(.dsf__step-2-container) .dsf__button-next::after { content: var(--btn-step-2); }
 .dsf:has(.dsf__step-3-container) .dsf__button-next::after,
 .dsf:has(.dsf__payment) .dsf__button-next::after,
-.dsf:has(.dsf__card-data) .dsf__button-next::after {
-    content: var(--btn-step-3);
-    font-size: 15px !important;
-}
+.dsf:has(.dsf__card-data) .dsf__button-next::after { content: var(--btn-step-3); }
 
-.dsf__button-next:hover {
-    background-color: var(--main-color-hover) !important;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(142, 44, 142, 0.28);
-}
+.dsf__button-next:hover { background-color: var(--red-hover) !important; }
 
-.dsf__button-next:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(142, 44, 142, 0.22);
-}
-
-/* ── BOTÓN SECUNDARIO (Volver) ──────────────────────────────────── */
+/* Botón secundario · Volver */
 .dsf__button-prev {
     background: transparent !important;
     border: none !important;
-    color: var(--text-muted) !important;
+    color: var(--muted-2) !important;
     text-decoration: none !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
     padding: var(--space-3) !important;
     margin: 0 !important;
     cursor: pointer !important;
     text-align: center !important;
     width: 100% !important;
     transition: color var(--transition);
-    border-radius: var(--radius-btn) !important;
 }
+.dsf__button-prev:hover { color: var(--ink) !important; }
 
-.dsf__button-prev:hover {
-    color: var(--main-color) !important;
-}
-
-/* ════════════════════════════════════════════════════════════════
-   AVISO LEGAL Y MENSAJE DE SEGURIDAD
-   ════════════════════════════════════════════════════════════════ */
-
+/* ── AVISO LEGAL ────────────────────────────────────────────────── */
 .dsf__legal-notice-container {
     display: flex !important;
     align-items: flex-start !important;
     gap: var(--space-3) !important;
     margin: var(--space-5) 0 !important;
 }
-
 .dsf__legal-notice-checkbox {
-    width: 18px !important;
-    height: 18px !important;
-    border: 1.5px solid var(--input-border) !important;
-    border-radius: 4px !important;
+    width: 18px !important; height: 18px !important;
+    border: var(--border-w) solid var(--border-hover) !important;
+    border-radius: 5px !important;
     cursor: pointer !important;
-    transition: background-color var(--transition),
-                border-color var(--transition);
     flex-shrink: 0;
     margin-top: 2px;
+    transition: background-color var(--transition), border-color var(--transition);
 }
-
 .dsf__legal-notice-checkbox--checked {
-    background-color: var(--main-color) !important;
-    border-color: var(--main-color) !important;
+    background-color: var(--red) !important;
+    border-color: var(--red) !important;
 }
-
 .dsf__legal-notice-label,
 .dsf__legal-notice {
     font-size: 12px !important;
-    color: var(--text-muted) !important;
+    color: var(--muted) !important;
     line-height: 1.5;
 }
+.dsf__legal-notice a { color: var(--red); text-decoration: underline; }
 
-.dsf__legal-notice a {
-    color: var(--main-color);
-    text-decoration: underline;
-}
+.dsf__security-message { display: none !important; }
 
-/* Ocultar mensaje de seguridad genérico */
-.dsf__security-message {
-    display: none !important;
-}
-
-/* ── LOADER ─────────────────────────────────────────────────────── */
-.dsf__loader-container {
-    color: var(--main-color) !important;
-}
-
-/* ── MENSAJES THANKS / ERROR ────────────────────────────────────── */
+.dsf__loader-container { color: var(--red) !important; }
 .dsf__thanks-message,
 .dsf__error-message {
     text-align: center;
@@ -525,41 +575,29 @@ button[type="submit"]::after {
     line-height: 1.5;
     color: var(--text-color);
 }
-
-.dsf__error-message {
-    color: var(--main-color) !important;
-}
+.dsf__error-message { color: var(--red) !important; }
 
 /* ════════════════════════════════════════════════════════════════
    RESPONSIVE · ≤480px
    ════════════════════════════════════════════════════════════════ */
-
 @media (max-width: 480px) {
-    .dsf {
-        padding: 88px var(--space-4) var(--space-5) var(--space-4) !important;
-    }
+    .dsf { padding: 52px var(--space-5) var(--space-7) var(--space-5) !important; }
+    .dsf::before { left: var(--space-5); }
+    .dsf__amount-option > div { font-size: 19px !important; }
+}
 
-    .dsf::before {
-        font-size: 17px !important;
-    }
+/* ── MÓVIL · espaciado vertical más compacto entre campos ──────── */
+@media (max-width: 768px) {
+    .dsf__group,
+    .dsf__payment .dsf__group,
+    .dsf__card-data .dsf__group { margin-bottom: 8px !important; }
 
-    .dsf__amount-option-list {
-        gap: var(--space-3);
-    }
+    .dsf__group label,
+    .dsf__payment label,
+    .dsf__card-data label { margin-bottom: 4px !important; }
 
-    .dsf__amount-option {
-        padding: var(--space-3) var(--space-2);
-        font-size: 14px;
-    }
-
-    /* Pills mensual/única vez · full width apilado en mobile */
-    .dsf__recurrency-option-list {
-        flex-direction: column !important;
-        gap: var(--space-3) !important;
-    }
-
-    .dsf__recurrency-option {
-        width: 100% !important;
-        flex: 1 1 100% !important;
-    }
+    .dsf__group input,
+    .dsf__group select,
+    .dsf__payment input,
+    .dsf__card-data input { height: 46px !important; padding: 11px 14px !important; }
 }
