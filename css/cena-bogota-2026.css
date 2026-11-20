@@ -2,9 +2,12 @@
    CRMD · Formulario Multi-Pasos DonarOnline · CENA BOGOTÁ 2026 (25 años)
    ────────────────────────────────────────────────────────────────
    Variante MORADA del skin "Sitio" de Cali (crmd-cali-v3.css).
-   MISMO layout (tarjetas blancas, badge "Más elegido", caja "Tu aporte",
-   Figtree). Solo cambia el acento: rojo CRMD -> morado 25 años (#8E2C8E).
-   Todo tokenizado en :root; el cuerpo queda idéntico a Cali.
+   MISMO layout (tarjetas, badge, caja "Tu aporte", Figtree).
+   Cambios respecto a Cali:
+     · acento rojo CRMD -> morado oficial 25 años (#91187d)
+     · toggle "Cada mes / Una sola vez" seleccionado: negro -> morado
+       (2 líneas del bloque .dsf__recurrency-option--selected:
+        var(--ink) -> var(--red))
 
    Campaña DonarOnline (UUID): a4725fa9-2d19-4766-a4a7-002467e29371
    Slug: casa-ronald-mcdonald-colombia/cena-casa-ronald-mcdonald-colombia-bogota-2026
@@ -25,10 +28,10 @@
     --lavender:       #D6CCFB;   /* Resumen paso 3 */
     --amber:          #FFBC0D;   /* Badge "Más elegido" */
 
-    --red:            #8E2C8E;
-    --red-hover:      #702470;
-    --red-soft-bg:    #F7F1FB;                    /* Fondo del seleccionado */
-    --red-ring:       rgba(142, 44, 142, 0.12);      /* Halo del seleccionado */
+    --red:            #91187d;
+    --red-hover:      #771466;
+    --red-soft-bg:    #F6ECF5;                    /* Fondo del seleccionado */
+    --red-ring:       rgba(145, 24, 125, 0.12);      /* Halo del seleccionado */
 
     --border:         rgba(43, 43, 43, 0.14);     /* Borde fino por defecto */
     --border-hover:   rgba(43, 43, 43, 0.32);
@@ -143,8 +146,8 @@ body {
 .dsf__recurrency-option:hover { border-color: var(--border-hover) !important; }
 
 .dsf__recurrency-option--selected {
-    background: var(--ink) !important;
-    border-color: var(--ink) !important;
+    background: var(--red) !important;
+    border-color: var(--red) !important;
 }
 
 /* Texto del toggle renombrado a "Cada mes" / "Una sola vez"
