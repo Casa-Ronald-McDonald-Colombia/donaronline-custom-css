@@ -1,9 +1,15 @@
 # DonarOnline · CSS Custom — Casa Ronald McDonald Colombia
 
 > Repositorio que sirve el CSS personalizado del iframe de DonarOnline para CRMD.
-> El CSS se hospeda vía **statically.io CDN** y se consume como `?css=<base64>` en la URL del iframe.
+> El CSS se consume como `?css=<base64>` en la URL del iframe.
 >
 > Mantenido por **Vladislav Marinovich** · Marinovich Consulting.
+
+> 📌 **Para crear o mantener campañas, lee primero [`ESTANDAR-CAMPANAS.md`](./ESTANDAR-CAMPANAS.md).**
+> Es el documento vigente: skins, qué se edita, receta paso a paso y campañas activas.
+> **Corrección importante:** producción sirve el CSS por **`cdn.jsdelivr.net`** (con purga en commits
+> frescos), no por statically. Donde este README diga statically / "no uses jsdelivr", prevalece el
+> estándar. Ambos CDN funcionan; jsdelivr + purga es lo usado por velocidad.
 
 ---
 
